@@ -330,3 +330,10 @@ Versienummering volgt [Semantic Versioning](https://semver.org/lang/nl/).
 - Volledig Ajax (geen page reload) met toast notificaties
 
 **Router v1.3.0** — 10 marketplace routes toegevoegd (web + API)
+
+## [1.6.1] — 2026-06-06 — Documentatie + Analyse + Mockup
+
+### Toegevoegd
+- `docs/ANALYSE.md` — Volledig statisch analyse rapport: code metrics, security audit, PSR compliance, routes inventaris, sprint overzicht
+- `docs/assets/architecture.md` — Architectuur documentatie: request flow, module structuur, block pipeline
+- Frontend mockup visualisatie toegevoegd aan project documentatie
