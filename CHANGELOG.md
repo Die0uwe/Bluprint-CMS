@@ -337,3 +337,16 @@ Versienummering volgt [Semantic Versioning](https://semver.org/lang/nl/).
 - `docs/ANALYSE.md` — Volledig statisch analyse rapport: code metrics, security audit, PSR compliance, routes inventaris, sprint overzicht
 - `docs/assets/architecture.md` — Architectuur documentatie: request flow, module structuur, block pipeline
 - Frontend mockup visualisatie toegevoegd aan project documentatie
+
+## [1.6.2] — 2026-06-06 — Frontpage Mockup + Docs compleet
+
+### Toegevoegd
+- `docs/MOCKUP-FRONTPAGE.html` — Volledig standalone HTML mockup van de Blueprint CMS frontpage. Gaming dark thema, 3-kolom layout (sidebar + content + sidebar), hero sectie, nieuws grid, events, Discord widget, Twitch live, Ollama AI chat block, WoW raid progress, community stats, responsive footer. Voorbeeld guild: Slayer Alliance — EU Sporeggar.
+
+### Zichtbare features in de mockup
+- Header met logo, navigatie, Discord + login knoppen
+- Hero met guild naam, progression stats (8/8H, 4/8M), CTA knoppen
+- Linker sidebar: login form (inclusief Discord OAuth), WoW raid progress bars (Blizzard + Raider.IO), community statistieken
+- Main content: featured nieuws artikel + 2-kolom nieuws grid, events met datum-badge + type-tag
+- Rechter sidebar: Twitch live stream status, Discord online leden met status-indicator, Ollama AI community chatbot
+- Footer met guild naam, links, "Powered by Blueprint CMS v1.6.0"

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint CMS — Frontpage Mockup v1.6.0</title>
+<!--
+============================================================================
+Copyright (C) 2026  DieOuwe (https://www.dieouwe.nl / https://www.slayeralliance.com)
+GPL-3.0-or-later
+Standalone mockup van hoe de Blueprint CMS frontpage eruit ziet.
+Voorbeeld guild: Slayer Alliance — EU Sporeggar
+============================================================================
+-->
+<style>
+  :root {
+    --bg:       #0a0c14; --bg2: #0f1220; --surface: #111827;
+    --border:   #1e2940; --accent: #6c3df4; --accent2: #a855f7;
+    --gold:     #f59e0b; --text:  #e2e8f0; --muted: #64748b;
+    --success:  #10b981; --error: #ef4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #080a10;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex; align-items: flex-start; justify-content: center;
+  }
+  .mockup-label {
+    text-align: center; margin-bottom: 1rem;
+    font-size: .75rem; color: var(--muted); letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .site-wrap {
+    width: 1100px; max-width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 80px rgba(0,0,0,.6);
+  }
+
+  /* HEADER */
+  .site-header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    height: 56px; display: flex; align-items: center;
+    padding: 0 24px; gap: 24px;
+  }
+  .site-logo {
+    font-size: 1.1rem; font-weight: 800;
+    background: linear-gradient(135deg, #a855f7, #6c3df4);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .site-nav { display: flex; gap: 2px; flex: 1; }
+  .nav-link {
+    padding: 6px 14px; border-radius: 7px; font-size: .875rem;
+    color: var(--muted); cursor: pointer;
+  }
+  .nav-link:hover, .nav-link.active { background: rgba(108,61,244,.15); color: var(--accent2); }
+  .header-actions { display: flex; gap: 8px; }
+  .btn-discord {
+    padding: 6px 14px; border-radius: 7px; font-size: .8rem; font-weight: 700;
+    background: #5865F2; color: #fff; border: none; cursor: pointer;
+  }
+  .btn-login {
+    padding: 6px 14px; border-radius: 7px; font-size: .8rem; font-weight: 700;
+    background: linear-gradient(135deg, #6c3df4, #a855f7); color: #fff; border: none; cursor: pointer;
+  }
+
+  /* HERO */
+  .site-hero {
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    padding: 3rem 2rem; display: flex; align-items: center; gap: 3rem;
+    background-image: radial-gradient(ellipse at 15% 50%, rgba(108,61,244,.12) 0%, transparent 55%);
+  }
+  .hero-text { flex: 1; }
+  .hero-eyebrow {
+    font-size: .75rem; font-weight: 700; color: var(--accent2);
+    text-transform: uppercase; letter-spacing: .1em; margin-bottom: .7rem;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .live-dot { width: 7px; height: 7px; background: var(--success); border-radius: 50%; }
+  .hero-title { font-size: 2rem; font-weight: 900; line-height: 1.1; margin-bottom: .7rem; }
+  .hero-title span { color: var(--accent2); }
+  .hero-sub { font-size: .9rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; max-width: 480px; }
+  .hero-cta { display: flex; gap: 10px; }
+  .cta-primary {
+    padding: .7rem 1.5rem; border-radius: 9px; font-size: .9rem; font-weight: 700;
+    background: var(--accent); color: #fff; border: none; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(108,61,244,.35);
+  }
+  .cta-secondary {
+    padding: .7rem 1.5rem; border-radius: 9px; font-size: .9rem; font-weight: 700;
+    background: transparent; color: var(--muted); border: 1px solid var(--border); cursor: pointer;
+  }
+  .hero-stats { display: flex; gap: 2rem; flex-shrink: 0; }
+  .hero-stat { text-align: center; }
+  .hero-stat-val { font-size: 2rem; font-weight: 900; color: var(--accent2); }
+  .hero-stat-lbl { font-size: .75rem; color: var(--muted); margin-top: .2rem; }
+
+  /* MAIN */
+  .site-main {
+    display: grid; grid-template-columns: 240px 1fr 210px;
+    gap: 1.5rem; padding: 1.5rem 2rem; align-items: start;
+  }
+  .sidebar { display: flex; flex-direction: column; gap: 1rem; }
+  .widget {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+  }
+  .widget-header {
+    padding: .6rem 1rem; background: rgba(255,255,255,.02);
+    border-bottom: 1px solid var(--border); font-size: .78rem; font-weight: 700;
+    color: var(--muted); display: flex; align-items: center; gap: .5rem;
+    text-transform: uppercase; letter-spacing: .05em;
+  }
+  .widget-body { padding: .9rem 1rem; }
+
+  /* Login */
+  .fake-input {
+    width: 100%; padding: .55rem .8rem; background: rgba(255,255,255,.04);
+    border: 1px solid var(--border); border-radius: 7px; color: var(--muted);
+    font-size: .85rem; margin-bottom: .5rem;
+  }
+  .login-btn {
+    width: 100%; padding: .6rem; border-radius: 7px; font-size: .85rem; font-weight: 700;
+    background: var(--accent); color: #fff; border: none; cursor: pointer; text-align: center;
+  }
+  .discord-login-btn {
+    width: 100%; padding: .5rem; border-radius: 7px; font-size: .8rem; font-weight: 700;
+    background: #5865F2; color: #fff; border: none; cursor: pointer; margin-top: .4rem;
+    text-align: center;
+  }
+
+  /* Progress bars */
+  .prog-row { margin-bottom: .5rem; }
+  .prog-label { display: flex; justify-content: space-between; font-size: .78rem; margin-bottom: .2rem; }
+  .prog-bar { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 3px; }
+
+  /* Community stats */
+  .stat-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: .3rem 0; border-bottom: 1px solid rgba(255,255,255,.04); font-size: .85rem;
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-label { color: var(--muted); }
+  .stat-val { font-weight: 700; color: var(--accent2); }
+  .stat-val.online { color: var(--success); }
+
+  /* Main content */
+  .main-content { display: flex; flex-direction: column; gap: 1.5rem; }
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;
+  }
+  .section-title { font-size: .95rem; font-weight: 800; }
+  .section-more { font-size: .8rem; color: var(--accent2); cursor: pointer; }
+
+  /* News grid */
+  .news-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .news-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; cursor: pointer; transition: border-color .2s;
+  }
+  .news-card:hover { border-color: rgba(108,61,244,.5); }
+  .news-img {
+    height: 80px; display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; border-bottom: 1px solid var(--border);
+  }
+  .news-body { padding: .9rem; }
+  .news-cat { font-size: .7rem; font-weight: 700; color: var(--accent2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .3rem; }
+  .news-title { font-size: .9rem; font-weight: 700; line-height: 1.3; margin-bottom: .4rem; }
+  .news-meta { font-size: .75rem; color: var(--muted); display: flex; gap: .8rem; }
+
+  .news-card.featured { grid-column: 1 / -1; display: grid; grid-template-columns: 200px 1fr; }
+  .news-card.featured .news-img { height: auto; min-height: 120px; }
+  .news-card.featured .news-title { font-size: 1.05rem; }
+  .news-excerpt { font-size: .82rem; color: var(--muted); line-height: 1.6; margin-bottom: .6rem; }
+
+  /* Events */
+  .event-item {
+    display: flex; align-items: center; gap: 1rem; padding: .7rem .9rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 9px; margin-bottom: .6rem; cursor: pointer; transition: border-color .2s;
+  }
+  .event-item:hover { border-color: rgba(108,61,244,.4); }
+  .event-date-box {
+    width: 40px; height: 40px; background: rgba(108,61,244,.15);
+    border-radius: 8px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .event-day { font-size: 1.1rem; font-weight: 900; color: var(--accent2); line-height: 1; }
+  .event-month { font-size: .65rem; color: var(--muted); }
+  .event-name { font-size: .875rem; font-weight: 700; }
+  .event-sub { font-size: .75rem; color: var(--muted); margin-top: .1rem; }
+  .event-tag { margin-left: auto; font-size: .7rem; font-weight: 700;
+    padding: 2px 8px; border-radius: 5px; flex-shrink: 0; }
+  .tag-mythic  { background: rgba(196,30,58,.15); color: #c41e3a; }
+  .tag-pvp     { background: rgba(245,158,11,.15); color: var(--gold); }
+  .tag-social  { background: rgba(16,185,129,.15); color: var(--success); }
+
+  /* Right sidebar */
+  .twitch-thumb {
+    background: rgba(145,71,255,.08); border-radius: 7px;
+    height: 80px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; position: relative; margin-bottom: .7rem;
+  }
+  .live-badge {
+    position: absolute; top: 5px; left: 5px;
+    background: var(--error); color: #fff; font-size: .65rem; font-weight: 900;
+    padding: 2px 6px; border-radius: 4px; letter-spacing: .04em;
+  }
+  .viewers-badge {
+    position: absolute; bottom: 5px; right: 5px;
+    font-size: .65rem; color: var(--muted);
+  }
+  .channel-name { font-size: .85rem; font-weight: 700; color: #9147ff; }
+  .stream-title { font-size: .75rem; color: var(--muted); margin-top: .15rem; }
+
+  .discord-row {
+    display: flex; align-items: center; gap: .6rem; padding: .3rem 0;
+    border-bottom: 1px solid rgba(255,255,255,.04); font-size: .8rem;
+  }
+  .discord-row:last-child { border-bottom: none; }
+  .disc-av {
+    width: 24px; height: 24px; border-radius: 50%; font-size: .7rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    position: relative;
+  }
+  .disc-st {
+    width: 7px; height: 7px; border-radius: 50%; border: 2px solid var(--surface);
+    position: absolute; bottom: -1px; right: -1px;
+  }
+  .disc-name { flex: 1; }
+  .disc-role { font-size: .7rem; color: var(--muted); }
+
+  /* AI chat */
+  .ai-msg {
+    padding: .4rem .7rem; border-radius: 7px; font-size: .8rem;
+    line-height: 1.4; max-width: 88%; margin-bottom: .4rem;
+  }
+  .ai-msg.bot { background: rgba(108,61,244,.12); color: #c4b5fd; }
+  .ai-msg.user { background: rgba(255,255,255,.05); color: var(--muted); margin-left: auto; }
+  .ai-input-row { display: flex; gap: .4rem; margin-top: .5rem; }
+  .ai-input {
+    flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--border);
+    border-radius: 7px; padding: .45rem .7rem; font-size: .8rem; color: var(--muted);
+  }
+  .ai-send {
+    padding: .45rem .7rem; background: var(--accent); border: none;
+    border-radius: 7px; color: #fff; cursor: pointer; font-size: .8rem;
+  }
+
+  /* FOOTER */
+  .site-footer {
+    background: var(--bg); border-top: 1px solid var(--border);
+    padding: 1rem 2rem; display: flex;
+    justify-content: space-between; align-items: center; font-size: .78rem; color: var(--muted);
+  }
+  .footer-links { display: flex; gap: 1.2rem; }
+  .footer-link { cursor: pointer; }
+  .footer-link:hover { color: var(--accent2); }
+</style>
+</head>
+<body>
+<div style="width:100%;max-width:1100px;margin:0 auto;">
+  <p class="mockup-label" style="font-family:'Segoe UI',sans-serif;text-align:center;margin-bottom:1rem;font-size:.7rem;color:#444;text-transform:uppercase;letter-spacing:.1em;">
+    Blueprint CMS v1.6.0 — Frontpage Mockup — Voorbeeld: Slayer Alliance Guild Website
+  </p>
+
+<div class="site-wrap">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="site-logo">⚔️ Slayer Alliance</div>
+    <nav class="site-nav">
+      <span class="nav-link active">Home</span>
+      <span class="nav-link">Nieuws</span>
+      <span class="nav-link">Guild</span>
+      <span class="nav-link">Raid</span>
+      <span class="nav-link">Forum</span>
+      <span class="nav-link">Minecraft</span>
+    </nav>
+    <div class="header-actions">
+      <button class="btn-discord">🎮 Discord</button>
+      <button class="btn-login">Inloggen</button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="site-hero">
+    <div class="hero-text">
+      <div class="hero-eyebrow">
+        <span class="live-dot"></span>
+        247 leden online · EU Sporeggar
+      </div>
+      <h1 class="hero-title">
+        Welkom bij <span>Slayer Alliance</span><br>
+        jouw WoW thuis op Sporeggar
+      </h1>
+      <p class="hero-sub">
+        Heroic &amp; Mythic raiding community op World of Warcraft Midnight.
+        Gezelligheid staat voorop, progression is de drive.
+        Elke woensdag en donderdag 20:00–23:00 CET.
+      </p>
+      <div class="hero-cta">
+        <button class="cta-primary">⚔️ Aanmelden voor de guild</button>
+        <button class="cta-secondary">Meer informatie</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-val">8/8</div>
+        <div class="hero-stat-lbl">Heroic Clear</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">4/8</div>
+        <div class="hero-stat-lbl">Mythic Progress</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">312</div>
+        <div class="hero-stat-lbl">Actieve leden</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="site-main">
+
+    <!-- LINKER SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="widget">
+        <div class="widget-header">🔐 Inloggen</div>
+        <div class="widget-body">
+          <div class="fake-input">Gebruikersnaam of e-mail</div>
+          <div class="fake-input" style="margin-top:0">Wachtwoord</div>
+          <div class="login-btn">Inloggen</div>
+          <div class="discord-login-btn">🎮 Inloggen met Discord</div>
+          <div style="text-align:center;margin-top:.6rem;font-size:.75rem;color:var(--muted)">
+            <span style="color:var(--accent2);cursor:pointer">Registreren</span> ·
+            <span style="cursor:pointer">Wachtwoord vergeten</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-header">🐉 Raid Progress</div>
+        <div class="widget-body">
+          <div style="font-size:.78rem;font-weight:700;color:#c41e3a;margin-bottom:.7rem;">
+            Nerub-ar Palace — Midnight
+          </div>
+          <div class="prog-row">
+            <div class="prog-label">
+              <span style="color:#aad372">Normal</span><span style="color:var(--muted)">8/8</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" style="width:100%;background:#aad372"></div></div>
+          </div>
+          <div class="prog-row">
+            <div class="prog-label">
+              <span style="color:#f48cba">Heroic</span><span style="color:var(--muted)">8/8</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" style="width:100%;background:#f48cba"></div></div>
+          </div>
+          <div class="prog-row">
+            <div class="prog-label">
+              <span style="color:#c41e3a">Mythic</span><span style="color:var(--muted)">4/8</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" style="width:50%;background:#c41e3a"></div></div>
+          </div>
+          <div style="font-size:.7rem;color:var(--muted);margin-top:.5rem;text-align:right">via Raider.IO + Blizzard API</div>
+        </div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-header">📊 Community</div>
+        <div class="widget-body">
+          <div class="stat-row"><span class="stat-label">👥 Leden</span><span class="stat-val">312</span></div>
+          <div class="stat-row"><span class="stat-label">📰 Artikelen</span><span class="stat-val">47</span></div>
+          <div class="stat-row"><span class="stat-label">💬 Forum posts</span><span class="stat-val">2.841</span></div>
+          <div class="stat-row"><span class="stat-label">🟫 Minecraft</span><span class="stat-val online">12/80 online</span></div>
+          <div class="stat-row"><span class="stat-label">🚗 FiveM</span><span class="stat-val online">34/64 online</span></div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <div>
+        <div class="section-head">
+          <span class="section-title">📰 Laatste nieuws</span>
+          <span class="section-more">Alle artikelen →</span>
+        </div>
+        <div class="news-grid">
+          <div class="news-card featured">
+            <div class="news-img" style="background:rgba(108,61,244,.12)">🐉</div>
+            <div class="news-body">
+              <div class="news-cat">Guild Nieuws</div>
+              <div class="news-title">Mythic 4/8 gehaald! Slayer Alliance op #12 EU ranking</div>
+              <div class="news-excerpt">Na weken van harde progressie heeft ons Mythic team de vierde boss van Nerub-ar Palace neergelegd. Een geweldige prestatie voor iedereen die bijgedragen heeft aan de progression. Volgende week gaan we voor Boss 5!</div>
+              <div class="news-meta">
+                <span>✍️ DieOuwe</span>
+                <span>2 dagen geleden</span>
+                <span>👁️ 1.247 views</span>
+              </div>
+            </div>
+          </div>
+          <div class="news-card">
+            <div class="news-img" style="background:rgba(196,30,58,.12)">⚔️</div>
+            <div class="news-body">
+              <div class="news-cat">Recruitment</div>
+              <div class="news-title">Gezocht: Healer &amp; Tank voor Mythic roster</div>
+              <div class="news-meta"><span>3 dagen geleden</span><span>👁️ 634</span></div>
+            </div>
+          </div>
+          <div class="news-card">
+            <div class="news-img" style="background:rgba(29,158,117,.12)">🏆</div>
+            <div class="news-body">
+              <div class="news-cat">Events</div>
+              <div class="news-title">Transmog contest — inzendingen open t/m 15 juni</div>
+              <div class="news-meta"><span>5 dagen geleden</span><span>👁️ 412</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-head">
+          <span class="section-title">📅 Aankomende events</span>
+          <span class="section-more">Volledige agenda →</span>
+        </div>
+        <div class="event-item">
+          <div class="event-date-box"><div class="event-day">07</div><div class="event-month">JUN</div></div>
+          <div><div class="event-name">Mythic Progressie — Nerub-ar Boss 5</div><div class="event-sub">20:00 – 23:00 · 20/20 aangemeld</div></div>
+          <span class="event-tag tag-mythic">Mythic</span>
+        </div>
+        <div class="event-item">
+          <div class="event-date-box"><div class="event-day">09</div><div class="event-month">JUN</div></div>
+          <div><div class="event-name">Rated BG Avond — Alliance vs Horde</div><div class="event-sub">19:00 – 22:00 · 14/20 aangemeld</div></div>
+          <span class="event-tag tag-pvp">PvP</span>
+        </div>
+        <div class="event-item">
+          <div class="event-date-box"><div class="event-day">12</div><div class="event-month">JUN</div></div>
+          <div><div class="event-name">Guild Social Evening — Discord Hangout</div><div class="event-sub">21:00 – open einde · 41 aangemeld</div></div>
+          <span class="event-tag tag-social">Social</span>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- RECHTER SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="widget">
+        <div class="widget-header">📺 Twitch — Live</div>
+        <div class="widget-body">
+          <div class="twitch-thumb">
+            🎮
+            <span class="live-badge">🔴 LIVE</span>
+            <span class="viewers-badge">1.247 kijkers</span>
+          </div>
+          <div class="channel-name">DieOuwe_Live</div>
+          <div class="stream-title">Mythic Progression — Boss 5 eerste poging</div>
+          <div style="font-size:.7rem;color:#9147ff;margin-top:.4rem;cursor:pointer">twitch.tv/DieOuwe_Live →</div>
+        </div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-header">
+          🎮 Discord Online
+          <span style="margin-left:auto;font-size:.7rem;color:var(--success)">● 247</span>
+        </div>
+        <div class="widget-body">
+          <div class="discord-row">
+            <div class="disc-av" style="background:#5865F2;color:#CECBF6">DA<div class="disc-st" style="background:#10b981"></div></div>
+            <span class="disc-name">DieOuwe</span><span class="disc-role">Guild Master</span>
+          </div>
+          <div class="discord-row">
+            <div class="disc-av" style="background:#c41e3a;color:#FCEBEB">LR<div class="disc-st" style="background:#10b981"></div></div>
+            <span class="disc-name">Lyriel</span><span class="disc-role">Officer</span>
+          </div>
+          <div class="discord-row">
+            <div class="disc-av" style="background:#1D9E75;color:#E1F5EE">VX<div class="disc-st" style="background:#f59e0b"></div></div>
+            <span class="disc-name">Vexar</span><span class="disc-role">Raider</span>
+          </div>
+          <div class="discord-row">
+            <div class="disc-av" style="background:#f59e0b;color:#412402">SK<div class="disc-st" style="background:#10b981"></div></div>
+            <span class="disc-name">Skullreaper</span><span class="disc-role">Tank</span>
+          </div>
+          <div class="discord-row">
+            <div class="disc-av" style="background:#7F77DD;color:#EEEDFE">NV<div class="disc-st" style="background:#10b981"></div></div>
+            <span class="disc-name">Novalith</span><span class="disc-role">DPS</span>
+          </div>
+          <div style="text-align:center;margin-top:.5rem;font-size:.75rem;color:var(--accent2);cursor:pointer">
+            Server joinen →
+          </div>
+        </div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-header">
+          🤖 Community AI
+          <span style="margin-left:auto;font-size:.65rem;color:var(--success)">● Ollama</span>
+        </div>
+        <div class="widget-body">
+          <div class="ai-msg bot">Hey! Vragen over de guild of raids? Ik help je graag.</div>
+          <div class="ai-msg user">Wanneer is de volgende raid?</div>
+          <div class="ai-msg bot">Vrijdag 7 juni om 20:00 — Mythic Boss 5. 20 leden aangemeld!</div>
+          <div class="ai-input-row">
+            <div class="ai-input">Stel een vraag...</div>
+            <button class="ai-send">➤</button>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div style="display:flex;align-items:center;gap:.5rem;">
+      ⚔️ <strong>Slayer Alliance</strong> — EU Sporeggar
+    </div>
+    <div class="footer-links">
+      <span class="footer-link">Privacy</span>
+      <span class="footer-link">Contact</span>
+      <span class="footer-link">Aanmelden</span>
+      <span class="footer-link">API</span>
+    </div>
+    <div style="color:var(--muted)">
+      Powered by <strong style="color:var(--accent2)">Blueprint CMS</strong> v1.6.0 ·
+      <a href="https://github.com/Die0uwe/Bluprint-CMS" style="color:var(--accent2);text-decoration:none">GitHub</a>
+    </div>
+  </footer>
+
+</div>
+</div>
+</body>
+</html>
