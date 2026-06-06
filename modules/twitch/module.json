@@ -1,0 +1,22 @@
+{
+    "slug":        "twitch",
+    "name":        "Twitch Integration",
+    "version":     "1.0.0",
+    "description": "Twitch live status, stream embeds, kanaal statistieken en volger info.",
+    "author":      "DieOuwe",
+    "author_url":  "https://www.dieouwe.nl",
+    "min_cms":     "1.0.0",
+    "class":       "CommunityFusion\\Modules\\Twitch\\TwitchModule",
+    "autoload":    "src/",
+    "is_core":     false,
+    "dependencies": [],
+    "hooks": ["render.sidebar_right", "user.profile"],
+    "permissions": ["twitch.view", "twitch.admin"],
+    "blocks": ["twitch-live", "twitch-stream"],
+    "settings": [
+        {"key": "client_id",     "label": "Client ID",     "type": "string"},
+        {"key": "client_secret", "label": "Client Secret", "type": "encrypted"},
+        {"key": "channel_name",  "label": "Standaard Kanaal","type": "string"},
+        {"key": "redirect_uri",  "label": "Redirect URI",  "type": "string"}
+    ]
+}

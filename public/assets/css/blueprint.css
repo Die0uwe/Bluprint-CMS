@@ -358,3 +358,40 @@ img { max-width: 100%; }
 
 /* Ad block */
 .cf-block-ad { border-radius: 8px; overflow: hidden; }
+
+/* ── Discord Block ──────────────────────────────────────────────────────── */
+.cf-discord-widget iframe { max-width: 100%; }
+.cf-discord-online  { font-size: .875rem; }
+.cf-discord-header  { display:flex; align-items:center; gap:.8rem; margin-bottom:.8rem; }
+.cf-discord-logo    { font-size: 1.5rem; }
+.cf-discord-guild   { font-weight: 700; }
+.cf-discord-count   { font-size: .78rem; color: var(--muted); display:flex; align-items:center; gap:.3rem; }
+.cf-discord-dot     { width:8px; height:8px; border-radius:50%; background:var(--success); display:inline-block; }
+.cf-discord-members { display:flex; flex-direction:column; gap:.4rem; }
+.cf-discord-member  { display:flex; align-items:center; gap:.6rem; font-size:.82rem; }
+.cf-discord-avatar-wrap { position:relative; flex-shrink:0; }
+.cf-discord-avatar  { width:28px; height:28px; border-radius:50%; object-fit:cover; background:var(--surface2); }
+.cf-discord-status  { position:absolute; bottom:-1px; right:-1px; width:8px; height:8px; border-radius:50%; border:2px solid var(--surface); }
+.cf-discord-username { font-weight:500; }
+
+/* ── Twitch Block ───────────────────────────────────────────────────────── */
+.cf-twitch-block    { font-size:.875rem; }
+.cf-twitch-header   { display:flex; align-items:center; gap:.7rem; }
+.cf-twitch-logo     { font-size:1.4rem; }
+.cf-twitch-channel  { font-weight:700; color:var(--text); }
+.cf-twitch-channel:hover { color:#9147ff; }
+.cf-twitch-status   { font-size:.75rem; margin-top:.15rem; }
+.cf-twitch-status.live    { color:#ef4444; }
+.cf-twitch-status.offline { color:var(--muted); }
+.cf-twitch-viewers  { margin-left:.4rem; color:var(--muted); }
+.cf-twitch-thumb-wrap { position:relative; margin-bottom:.7rem; }
+.cf-twitch-thumb    { width:100%; border-radius:8px; display:block; }
+.cf-twitch-live-badge {
+  position:absolute; top:.5rem; left:.5rem;
+  background:#ef4444; color:#fff; font-size:.7rem;
+  font-weight:700; padding:.15rem .5rem; border-radius:4px;
+}
+.cf-twitch-info  { margin-top:.5rem; }
+.cf-twitch-title { font-size:.82rem; color:var(--text-dim); margin:.4rem 0 .2rem; line-height:1.3; }
+.cf-twitch-game  { font-size:.75rem; color:var(--muted); }
+.cf-twitch-embed-wrap { border-radius:8px; overflow:hidden; }

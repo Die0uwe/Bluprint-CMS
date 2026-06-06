@@ -1,0 +1,34 @@
+{
+    "slug":        "discord",
+    "name":        "Discord Integration",
+    "version":     "1.0.0",
+    "description": "Discord OAuth login, rollen synchronisatie, server widgets en live stats.",
+    "author":      "DieOuwe",
+    "author_url":  "https://www.dieouwe.nl",
+    "min_cms":     "1.0.0",
+    "class":       "CommunityFusion\\Modules\\Discord\\DiscordModule",
+    "autoload":    "src/",
+    "is_core":     false,
+    "dependencies": [],
+    "hooks": [
+        "user.login",
+        "user.logout",
+        "user.register"
+    ],
+    "permissions": [
+        "discord.sync",
+        "discord.admin",
+        "discord.view"
+    ],
+    "blocks": [
+        "discord-widget",
+        "discord-online"
+    ],
+    "settings": [
+        {"key": "client_id",     "label": "Client ID",     "type": "string"},
+        {"key": "client_secret", "label": "Client Secret", "type": "encrypted"},
+        {"key": "guild_id",      "label": "Guild/Server ID","type": "string"},
+        {"key": "bot_token",     "label": "Bot Token",     "type": "encrypted"},
+        {"key": "redirect_uri",  "label": "Redirect URI",  "type": "string"}
+    ]
+}

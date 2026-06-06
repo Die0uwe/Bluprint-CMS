@@ -164,3 +164,39 @@ Versienummering volgt [Semantic Versioning](https://semver.org/lang/nl/).
 
 **CSS uitgebreid**
 - `public/assets/css/blueprint.css` — Block-specifieke CSS: `.cf-block-*` classes voor Text, News lijst, Login, Stats, Ad blocks
+
+## [1.3.0] — 2026-06-06 — Sprint 4: Discord OAuth + Twitch Integratie
+
+### Toegevoegd
+
+**OAuth2 Architectuur (Abstract Base)**
+- `src/Core/Auth/OAuth/OAuthClient.php` — Abstract OAuth2 base class. Bouwt authorization URL op, wisselt auth code in voor tokens, haalt user-data op, slaat tokens AES-256-GCM encrypted op in cf_user_oauth, biedt token refresh, HTTP helpers (POST/GET via cURL)
+
+**Discord Module** (`modules/discord/`)
+- `module.json` — Module manifest: slug, class, hooks, permissions, settings schema
+- `src/DiscordOAuth.php` — Discord OAuth2 client. Authorization URL, token exchange, user fetch, guild member API, bot token support, widget data, avatar URL helper
+- `src/DiscordModule.php` — Module boot: registreert blocks, sync job op login, OAuth routes via hook
+- `src/DiscordOAuthController.php` — OAuth flow controller: redirect → callback → rol synchronisatie → DB opslag
+- `src/DiscordWidgetBlock.php` — Officiële Discord widget iframe embed (configureerbaar thema/grootte)
+- `src/DiscordOnlineBlock.php` — Online leden via Guild Widget API (cached 60s), join-knop, avatar + status
+
+**Twitch Module** (`modules/twitch/`)
+- `module.json` — Module manifest
+- `src/TwitchOAuth.php` — Twitch OAuth2 (Authorization Code + Client Credentials). Helix API, live status, channel info, follower count, app token ophalen
+- `src/TwitchModule.php` — Module boot: blocks registreren, OAuth routes
+- `src/TwitchOAuthController.php` — OAuth flow: redirect → callback → koppeling opslaan
+- `src/TwitchLiveBlock.php` — Live/offline status block. Thumbnail, viewer count, game naam (cached 90s)
+- `src/TwitchStreamBlock.php` — Twitch player embed (optioneel met chat, muted, hoogte)
+
+**Discord Rol Synchronisatie**
+- DB schema: `cf_discord_role_mapping` + `cf_discord_sync_log`
+- Queue-based sync bij elke login: Discord rollen → CMS rollen (auto-assign + auto-remove)
+- RBAC cache invalidatie na sync
+
+**CLI Queue Worker**
+- `cli/commands/QueueWorkerCommand.php` — Database queue worker: reserveer, verwerk, retry, fail-markering
+- `cli/commands/CacheClearCommand.php` — Cache wissen (file + Twig cache)
+
+**CSS uitgebreid**
+- Discord: widget, online leden, avatar, status dot
+- Twitch: live badge, thumbnail, channel link, embed wrap
