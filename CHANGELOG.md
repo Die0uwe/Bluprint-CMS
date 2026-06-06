@@ -138,3 +138,29 @@ Versienummering volgt [Semantic Versioning](https://semver.org/lang/nl/).
 **Frontend Assets**
 - `public/assets/css/blueprint.css` — Volledig gaming dark CSS (CSS variables, layout, cards, forms, responsive)
 - `public/assets/js/blueprint.js` — Core JS (nav-highlight, flash messages, scroll animaties)
+
+## [1.2.0] — 2026-06-06 — Sprint 3: Block API + Drag & Drop Layout
+
+### Toegevoegd
+
+**Block Registry (Core)**
+- `src/Core/Block/BlockRegistry.php` — Centrale registry voor alle block types. Zone rendering met cache-ondersteuning, createBlock/updateBlock/deleteBlock CRUD, drag & drop positie-opslag via `updatePositions()`, DB-sync van block types
+
+**Block Types (6 stuks)**
+- `src/Blocks/Types/TextBlock.php` — Tekst blok met nl2br output, 1u cache
+- `src/Blocks/Types/HtmlBlock.php` — Vrij HTML blok voor admins, 30min cache
+- `src/Blocks/Types/NewsBlock.php` — Laatste X artikelen als compacte lijst, 5min cache
+- `src/Blocks/Types/LoginBlock.php` — Login formulier of welkom-bericht (user-aware, geen cache)
+- `src/Blocks/Types/StatsBlock.php` — Site statistieken (leden/artikelen/paginas), 10min cache
+- `src/Blocks/Types/AdBlock.php` — Advertentie/banner blok met externe URL, 1u cache
+
+**Block Controller + Admin UI**
+- `src/Modules/Blocks/BlockController.php` — CRUD endpoints + drag & drop JSON API (`/api/v1/blocks/positions`, `/api/v1/blocks/zones`)
+- `src/Modules/Blocks/views/index.php` — Volledige drag & drop Block Manager admin UI. CSS Grid site-preview met 6 zones (header/topmenu/sidebars/content/footer), block palette met drag-from, zone-droptargets, placed block editing/delete/toggle, Add Block modal, Ajax API-calls met toast feedback
+
+**Router uitgebreid**
+- Block admin routes: GET/POST `/admin/blocks`, `/admin/blocks/{id}/update`, `/admin/blocks/{id}/delete`
+- Block API routes: GET `/api/v1/blocks/zones`, POST `/api/v1/blocks/positions`
+
+**CSS uitgebreid**
+- `public/assets/css/blueprint.css` — Block-specifieke CSS: `.cf-block-*` classes voor Text, News lijst, Login, Stats, Ad blocks

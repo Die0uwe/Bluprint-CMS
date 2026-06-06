@@ -293,3 +293,68 @@ img { max-width: 100%; }
    ║  Created: 2026-06-06 | Status: New                                  ║
    ║  Created by Dieouwe — www.dieouwe.nl                                ║
    ╚══════════════════════════════════════════════════════════════════════╝ */
+
+/* ── Block Systeem ──────────────────────────────────────────────────────── */
+.cf-block { margin-bottom: 1rem; }
+.cf-block-title {
+  font-size: .875rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  color: var(--muted); margin-bottom: .7rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Text block */
+.cf-block-text { font-size: .9rem; line-height: 1.6; color: var(--text-dim); }
+
+/* News list block */
+.cf-block-news-list { list-style: none; }
+.cf-block-news-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .4rem 0; border-bottom: 1px solid rgba(255,255,255,.05);
+  font-size: .85rem;
+}
+.cf-block-news-item a { color: var(--text); transition: color .15s; }
+.cf-block-news-item a:hover { color: var(--accent2); }
+.cf-block-news-date { color: var(--muted); font-size: .75rem; flex-shrink: 0; margin-left: .5rem; }
+.cf-block-more {
+  display: inline-block; margin-top: .7rem;
+  font-size: .78rem; color: var(--accent2);
+}
+
+/* Login block */
+.cf-block-login {
+  display: flex; flex-direction: column; gap: .6rem;
+}
+.cf-block-login--logged-in {
+  flex-direction: row; align-items: center; gap: .8rem;
+  padding: .7rem; background: rgba(255,255,255,.03);
+  border-radius: 8px; border: 1px solid var(--border);
+}
+.cf-block-login-avatar { font-size: 2rem; }
+.cf-block-login-links { font-size: .78rem; margin-top: .2rem; }
+.cf-block-login-links a { color: var(--accent2); margin-right: .3rem; }
+.cf-block-login-register {
+  text-align: center; font-size: .78rem; color: var(--muted);
+}
+.cf-block-login .cf-input { padding: .5rem .8rem; font-size: .85rem; }
+
+/* Stats block */
+.cf-block-stats {
+  display: flex; flex-direction: column; gap: .5rem;
+}
+.cf-block-stat-item {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .5rem .7rem;
+  background: rgba(255,255,255,.03);
+  border-radius: 6px; border: 1px solid var(--border);
+}
+.cf-stat-icon   { font-size: 1.1rem; width: 24px; text-align: center; }
+.cf-stat-value  { font-size: 1.3rem; font-weight: 800; }
+.cf-stat-label  { font-size: .78rem; color: var(--muted); }
+
+/* Empty block placeholder */
+.cf-block-empty { color: var(--muted); font-size: .85rem; padding: .5rem 0; }
+
+/* Ad block */
+.cf-block-ad { border-radius: 8px; overflow: hidden; }

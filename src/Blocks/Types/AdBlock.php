@@ -1,0 +1,44 @@
+<?php
+// ============================================================================
+// Copyright (C) 2026  DieOuwe — GPL-3.0-or-later
+// ============================================================================
+declare(strict_types=1);
+namespace CommunityFusion\Blocks\Types;
+use CommunityFusion\Blocks\AbstractBlock;
+
+/** Advertentie / banner blok */
+final class AdBlock extends AbstractBlock
+{
+    public function getSlug(): string { return 'advertisement'; }
+    public function getName(): string { return 'Advertentie / Banner'; }
+
+    public function getConfigSchema(): array
+    {
+        return [
+            'image_url'  => ['type' => 'url',    'label' => 'Afbeelding URL', 'required' => true],
+            'link_url'   => ['type' => 'url',    'label' => 'Link URL'],
+            'alt_text'   => ['type' => 'string', 'label' => 'Alt tekst'],
+            'open_new'   => ['type' => 'boolean','label' => 'Openen in nieuw tabblad', 'default' => true],
+        ];
+    }
+
+    public function render(array $config, array $context = []): string
+    {
+        $img  = htmlspecialchars($config['image_url'] ?? '', ENT_QUOTES);
+        $link = htmlspecialchars($config['link_url']  ?? '#', ENT_QUOTES);
+        $alt  = htmlspecialchars($config['alt_text']  ?? 'Advertentie', ENT_QUOTES);
+        $target = ($config['open_new'] ?? true) ? ' target="_blank" rel="noopener"' : '';
+
+        if (empty($img)) return '<!-- Advertentie: geen afbeelding ingesteld -->';
+
+        return <<<HTML
+        <div class="cf-block-ad">
+            <a href="{$link}"{$target}>
+                <img src="{$img}" alt="{$alt}" loading="lazy" style="width:100%;border-radius:8px;">
+            </a>
+        </div>
+        HTML;
+    }
+
+    public function getCacheTtl(): int { return 3600; }
+}
