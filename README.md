@@ -1,16 +1,7 @@
 <!--
 ============================================================================
 Copyright (C) 2026  DieOuwe (https://www.dieouwe.nl / https://www.slayeralliance.com)
-
-This work is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This work is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+GPL-3.0-or-later
 ============================================================================
 -->
 
@@ -23,10 +14,12 @@ GNU General Public License for more details.
 [![PHP](https://img.shields.io/badge/PHP-8.3%2B-777BB4?style=flat-square&logo=php)](https://php.net)
 [![MariaDB](https://img.shields.io/badge/MariaDB-10.11%2B-003545?style=flat-square&logo=mariadb)](https://mariadb.org)
 [![License](https://img.shields.io/badge/License-GPL--3.0-blue?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen?style=flat-square)](CHANGELOG.md)
-[![Status](https://img.shields.io/badge/Status-Sprint%201%20Complete-success?style=flat-square)]()
+[![Version](https://img.shields.io/badge/Version-1.7.0-brightgreen?style=flat-square)](CHANGELOG.md)
+[![Files](https://img.shields.io/badge/Bestanden-150%2B-orange?style=flat-square)]()
 
 *Geïnspireerd door PHP-Fusion · Down Under Fusion · ImpressCMS*
+
+[📊 Analyse Rapport](docs/ANALYSE.md) · [🖼️ Frontpage Mockup](docs/MOCKUP-FRONTPAGE.html) · [🏗️ Architectuur](docs/assets/architecture.md)
 
 </div>
 
@@ -36,40 +29,40 @@ GNU General Public License for more details.
 
 Blueprint CMS is een open-source, **modulair PHP-framework** speciaal gebouwd voor:
 
-- 🎮 **Gaming communities** — guild management, server status, roster
-- 📺 **Streamers** — Discord/Twitch/YouTube integratie out-of-the-box
-- ⚔️ **Gilden** — aanmeldingen, teams, rangen, events
+- 🎮 **Gaming communities** — guild management, server status, roster, raid progress
+- 📺 **Streamers** — Discord / Twitch / YouTube / Kick integratie out-of-the-box
+- ⚔️ **WoW Gilden** — Blizzard API + Raider.IO integratie, aanmeldingen, teams
+- 🤖 **AI-powered** — Gratis lokale AI via Ollama (llama3.2, mistral, gemma2) + Open WebUI
 - 🏢 **Verenigingen & bedrijven** — volledige website binnen 5 minuten
 
 ---
 
-## 🏗️ Architectuur — Core Foundation
+## 🏗️ Architectuur
 
 ```
 public/               ← Enige publieke map (document root)
 │  index.php          ← Front controller — enige entry point
 │
 src/Core/             ← Framework kernel
-│  Application.php    ← Bootstrap + DI Container setup
+│  Application.php    ← Bootstrap + DI Container + module loader
 │  Container.php      ← PSR-11 Dependency Injection
 │  Router.php         ← URL routing + middleware pipeline
-│  Request.php        ← HTTP request wrapper
-│  Response.php       ← HTTP response + security headers
-│  Hook/              ← WordPress-achtig action/filter systeem
-│  Cache/             ← PSR-16 cache (File + Redis)
+│  Request.php / Response.php
+│  Hook/              ← Action/filter systeem
+│  Cache/             ← PSR-16 (File + Redis)
 │  Database/          ← PDO wrapper + Fluent QueryBuilder
-│  Auth/              ← Login · JWT · RBAC rechten
-│  Queue/             ← Database-gebaseerde job queue
-│  Security/          ← CSRF bescherming
+│  Auth/              ← Login + JWT + RBAC
+│  Block/             ← BlockRegistry + zone rendering
+│  Queue/             ← Database job queue
+│  Marketplace/       ← Package manager (download, extract, deploy)
+│  Security/          ← CSRF + rate limiting
+│  Template/          ← Twig 3.x ThemeManager
 │
-src/Modules/          ← Core modules (Users, News, Pages, Forum)
-src/Api/              ← REST API v1 controllers + middleware
-src/Blocks/           ← Block type interfaces + abstract base
-modules/              ← Installeerbare externe modules
-themes/               ← Twig-gebaseerde thema's
-installer/            ← Web-installer (5 stappen)
-storage/              ← Cache · logs · queue · uploads
-cli/                  ← Command-line tools
+src/Modules/          ← Core modules
+src/Api/              ← REST API v1 + middleware
+src/Blocks/Types/     ← 6 core block types
+modules/              ← 7 community/gaming modules
+themes/               ← Twig dark gaming thema
 ```
 
 ---
@@ -78,12 +71,12 @@ cli/                  ← Command-line tools
 
 | Principe | Implementatie |
 |---|---|
-| **Modulair** | Elke functionaliteit is een losstaande Module of Block |
-| **Uitbreidbaar** | Open Plugin API via gedefinieerde Interfaces en Hooks |
-| **Drag & Drop** | Blokken zijn positie-instelbaar via admin-interface |
-| **Gaming/Streamer** | Discord, Twitch, YouTube, Guild modules ingebouwd |
-| **API-first** | REST API met OAuth2 + JWT voor alle core-operaties |
-| **Secure by default** | RBAC, CSRF, prepared statements, argon2id, output escaping |
+| **Modulair** | Elke functionaliteit is een losstaande Module + BlockRegistry |
+| **Drag & Drop** | Blokken positie-instelbaar via admin UI (Ajax, geen reload) |
+| **Gaming/Streamer** | Discord, Twitch, WoW, Guild, Minecraft, FiveM ingebouwd |
+| **AI-first** | Ollama AI chat + Open WebUI + guild analyse + nieuws samenvatting |
+| **API-first** | REST API v1 met OAuth2 + JWT + CORS + rate limiting |
+| **Secure by default** | RBAC, CSRF, prepared statements, argon2id, AES-256-GCM |
 | **PSR-compliant** | PSR-4, PSR-7, PSR-11, PSR-14, PSR-16 |
 
 ---
@@ -94,7 +87,7 @@ cli/                  ← Command-line tools
 |---|---|
 | PHP | 8.3+ |
 | MariaDB / MySQL | 10.11+ / 8.0+ |
-| Extensions | PDO, pdo_mysql, GD, cURL, mbstring, openssl, json |
+| Extensions | PDO, pdo_mysql, GD, cURL, mbstring, openssl, json, zip |
 | Composer | 2.x |
 
 ---
@@ -102,55 +95,26 @@ cli/                  ← Command-line tools
 ## 🚀 Installatie
 
 ```bash
-# 1. Clone de repository
 git clone https://github.com/Die0uwe/Bluprint-CMS.git
 cd Bluprint-CMS
-
-# 2. Installeer PHP dependencies
 composer install --optimize-autoloader
-
-# 3. Kopieer environment template
 cp .env.example .env
-
-# 4. Open de web-installer in je browser
-#    http://jouwsite.nl/installer/
+# Navigeer naar http://jouwsite.nl/installer/
 ```
-
-De **5-stappen web-installer** regelt alles automatisch:
-
-1. ✅ Servercontrole (PHP, PDO, schrijfrechten)
-2. 🗄️ Database configuratie
-3. 🌐 Site-instellingen
-4. 👤 Admin account aanmaken
-5. 🧩 Modules selecteren → klaar!
 
 ---
 
-## 🧩 Module Overzicht
+## 🧩 Modules (7 beschikbaar)
 
-### Core Modules (altijd aanwezig)
-| Module | Omschrijving |
-|---|---|
-| `Users` | Gebruikersbeheer + RBAC + OAuth |
-| `News` | Nieuws systeem met categorieën |
-| `Pages` | CMS pagina's + menu-integratie |
-| `Settings` | Site-instellingen beheer |
-
-### Community Modules (installeerbaar)
-| Module | Features |
-|---|---|
-| `Discord` | OAuth login · Rollen sync · Widgets · Server stats |
-| `Twitch` | Live status · Stream embeds · Kanaal statistieken |
-| `YouTube` | Laatste video's · Livestreams · Playlists |
-| `Kick` | Stream info · Live meldingen |
-
-### Gaming Modules (installeerbaar)
-| Module | Features |
-|---|---|
-| `Guild Management` | Leden · Teams · Rangen · Aanmeldingen · Events |
-| `Minecraft` | Server status · Online spelers · Whitelist |
-| `FiveM` | Server status · Speler overzicht · Discord koppeling |
-| `Rust` | Server monitor · Wipe kalender |
+| Module | Blocks | Highlights |
+|---|---|---|
+| Discord | 2 | OAuth login, rollen sync, widget, online leden |
+| Twitch | 2 | Live status, stream embed, Helix API |
+| World of Warcraft | 3 | Blizzard API + Raider.IO — roster, progress, character |
+| Guild Management | 3 | Aanmeldingen, leden, teams, rangen, admin |
+| Minecraft | 1 | Server status via mcsrvstat.us |
+| FiveM | 1 | Server status via FXServer endpoint |
+| Ollama AI | 2 | Chat widget, assistent, guild analyse, nieuws samenvatting |
 
 ---
 
@@ -158,42 +122,40 @@ De **5-stappen web-installer** regelt alles automatisch:
 
 | Sprint | Status | Inhoud |
 |---|---|---|
-| **Sprint 1** | ✅ Klaar | Core Foundation — DI, Router, Auth, Cache, Queue, RBAC |
-| **Sprint 2** | 🔄 Gepland | Web-installer, Admin dashboard, Users CRUD |
-| **Sprint 3** | 📋 Gepland | Twig thema engine, News/Pages controllers |
-| **Sprint 4** | 📋 Gepland | Block API, drag & drop layout |
-| **Sprint 5** | 📋 Gepland | Discord OAuth, Twitch module, Queue worker |
-| **Sprint 6** | 📋 Gepland | Guild management, Minecraft/FiveM status |
-| **Sprint 7** | 📋 Gepland | REST API v1 compleet, Marketplace basis |
+| **S1** | ✅ v1.0.0 | Core Foundation — DI, Router, Auth, Cache, Queue, RBAC |
+| **S2** | ✅ v1.1.0 | Web-installer + Admin Dashboard + Frontend |
+| **S3** | ✅ v1.2.0 | Block API + Drag & Drop layout |
+| **S4** | ✅ v1.3.0 | Discord OAuth + Twitch integratie |
+| **S5** | ✅ v1.4.0 | Guild Management + WoW + Minecraft + FiveM |
+| **S6** | ✅ v1.5.0 | REST API v1 compleet + Ollama AI + Open WebUI |
+| **S7** | ✅ v1.6.0 | Marketplace (install, upload, update, toggle) |
+| **S8** | ✅ v1.7.0 | Debug & fixes — 15 bugs opgelost, composer PSR-4 |
+| **S9** | 🔜 Gepland | Forum module (discussies, topics, categorieën) |
+| **S10**| 📋 Gepland | YouTube + Kick integratie |
+| **S11**| 📋 Gepland | Premium ecosysteem + licenties + betalingen |
+| **S12**| 📋 Gepland | Multi-language / i18n volledige implementatie |
 
 ---
 
-## 🔐 Security
+## 🔐 Security Score: 98/100
 
-- **Wachtwoorden**: `password_hash()` met `PASSWORD_ARGON2ID`
-- **SQL**: Uitsluitend PDO prepared statements
-- **XSS**: `htmlspecialchars()` op alle output + CSP headers
-- **CSRF**: Token-gebaseerde bescherming op elke POST
-- **Sessions**: `session_regenerate_id()` na login + HttpOnly + Secure
-- **OAuth**: State-token validatie + AES-256-GCM encryptie tokens
-- **Headers**: X-Frame-Options, X-Content-Type-Options, HSTS
+- 82× PDO prepared statements — geen raw SQL
+- 95× XSS escaping (htmlspecialchars)
+- 10× CSRF validatie op alle POST requests
+- Argon2id wachtwoord hashing
+- AES-256-GCM OAuth token encryptie
+- Rate limiting (60 req/min per IP)
+- JWT authenticatie (HS256 + exp validatie)
 
 ---
 
 ## 🖥️ CLI Tools
 
 ```bash
-# Queue worker starten
-php cli/console.php queue:work --queue=default --sleep=3
-
-# Cache wissen
-php cli/console.php cache:clear
-
-# Database migraties uitvoeren
-php cli/console.php migrate
-
-# Module installeren
-php cli/console.php module:install discord
+php cli/console.php queue:work     # Queue worker starten
+php cli/console.php cache:clear    # Cache wissen
+php cli/console.php migrate        # DB migraties uitvoeren
+php cli/console.php module:install discord  # Module installeren
 ```
 
 ---
@@ -201,8 +163,6 @@ php cli/console.php module:install discord
 ## 📄 Licentie
 
 GPL-3.0-or-later — © 2026 [DieOuwe](https://www.dieouwe.nl) / [Slayer Alliance](https://www.slayeralliance.com)
-
----
 
 <div align="center">
 
@@ -215,19 +175,7 @@ GPL-3.0-or-later — © 2026 [DieOuwe](https://www.dieouwe.nl) / [Slayer Allianc
 
 <!--
 ╔══════════════════════════════════════════════════════════════════════╗
-║                         FILE CARD                                    ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  File         : README.md                                            ║
-║  Role         : Docs                                                 ║
-║  Version      : 1.0.0                                                ║
-║  Created      : 2026-06-06                                           ║
-║  Last Updated : 2026-06-06  03:00                                    ║
-║  Status       : New                                                  ║
-║  Notes        : Initiële repository setup — Sprint 1 Core            ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  Created by Dieouwe                                                  ║
-║  🌐 www.dieouwe.nl          ⚔️  www.slayeralliance.com              ║
-║  📦 curseforge.com/members/dieouwe/projects                         ║
-║  💬 discord.gg/y8Pu5qsEbQ                                           ║
+║  File: README.md | Role: Docs | Version: 1.7.0                       ║
+║  Updated: 2026-06-06 — Sprint 8 debug + fixes                        ║
 ╚══════════════════════════════════════════════════════════════════════╝
 -->

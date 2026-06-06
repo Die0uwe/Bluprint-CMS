@@ -91,6 +91,14 @@ final class ThemeManager
         return $this->twig;
     }
 
+    public function setBlockRegistry(\CommunityFusion\Core\Block\BlockRegistry $registry): void
+    {
+        $this->twig->addFunction(new \Twig\TwigFunction('render_block', function(array $blockRow) use ($registry): string {
+            return $registry->renderBlock($blockRow);
+        }));
+        $this->twig->addGlobal('zones', []);
+    }
+
     private function registerFunctions(): void
     {
         // {{ asset('css/style.css') }} → /assets/css/style.css

@@ -86,11 +86,50 @@ final class Application
             return new ThemeManager(CF_ROOT . '/themes', $config['app']['theme'] ?? 'default');
         });
 
+        // Block Registry
+        $this->container->singleton(\CommunityFusion\Core\Block\BlockRegistry::class, function() {
+            return new \CommunityFusion\Core\Block\BlockRegistry(
+                $this->container->make(\CommunityFusion\Core\Database\Connection::class),
+                $this->container->make(\CommunityFusion\Core\Cache\CacheManager::class),
+            );
+        });
+
+        // Registreer core block types
+        $this->container->make(\CommunityFusion\Core\Block\BlockRegistry::class)->register(
+            new \CommunityFusion\Blocks\Types\TextBlock()
+        );
+        $this->container->make(\CommunityFusion\Core\Block\BlockRegistry::class)->register(
+            new \CommunityFusion\Blocks\Types\HtmlBlock()
+        );
+        $this->container->make(\CommunityFusion\Core\Block\BlockRegistry::class)->register(
+            new \CommunityFusion\Blocks\Types\NewsBlock(
+                $this->container->make(\CommunityFusion\Core\Database\Connection::class)
+            )
+        );
+        $this->container->make(\CommunityFusion\Core\Block\BlockRegistry::class)->register(
+            new \CommunityFusion\Blocks\Types\LoginBlock()
+        );
+        $this->container->make(\CommunityFusion\Core\Block\BlockRegistry::class)->register(
+            new \CommunityFusion\Blocks\Types\StatsBlock(
+                $this->container->make(\CommunityFusion\Core\Database\Connection::class)
+            )
+        );
+        $this->container->make(\CommunityFusion\Core\Block\BlockRegistry::class)->register(
+            new \CommunityFusion\Blocks\Types\AdBlock()
+        );
+
         // Laad geregistreerde modules
         $this->loadModules();
 
         // PHP instellingen
         $this->configureRuntime($config);
+
+        // Wire ThemeManager met BlockRegistry voor render_block() in Twig
+        try {
+            $theme    = $this->container->make(\CommunityFusion\Core\Template\ThemeManager::class);
+            $registry = $this->container->make(\CommunityFusion\Core\Block\BlockRegistry::class);
+            $theme->setBlockRegistry($registry);
+        } catch (\Throwable) {}
 
         $this->booted = true;
         $this->hooks->doAction('app.booted', $this);

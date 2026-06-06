@@ -22,7 +22,14 @@
     },
     "autoload": {
         "psr-4": {
-            "CommunityFusion\\": "src/"
+            "CommunityFusion\\": "src/",
+            "CommunityFusion\\Modules\\Discord\\": "modules/discord/src/",
+            "CommunityFusion\\Modules\\Twitch\\": "modules/twitch/src/",
+            "CommunityFusion\\Modules\\Warcraft\\": "modules/warcraft/src/",
+            "CommunityFusion\\Modules\\Guild\\": "modules/guild-management/src/",
+            "CommunityFusion\\Modules\\Minecraft\\": "modules/minecraft/src/",
+            "CommunityFusion\\Modules\\FiveM\\": "modules/fivem/src/",
+            "CommunityFusion\\Modules\\Ollama\\": "modules/ollama/src/"
         }
     },
     "autoload-dev": {
@@ -31,9 +38,9 @@
         }
     },
     "scripts": {
-        "test":  "phpunit --testdox",
-        "stan":  "phpstan analyse src --level=8",
-        "cs":    "phpcs --standard=PSR12 src/"
+        "test": "phpunit --testdox",
+        "stan": "phpstan analyse src --level=8",
+        "cs": "phpcs --standard=PSR12 src/"
     },
     "config": {
         "sort-packages": true,

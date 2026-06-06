@@ -350,3 +350,34 @@ Versienummering volgt [Semantic Versioning](https://semver.org/lang/nl/).
 - Main content: featured nieuws artikel + 2-kolom nieuws grid, events met datum-badge + type-tag
 - Rechter sidebar: Twitch live stream status, Discord online leden met status-indicator, Ollama AI community chatbot
 - Footer met guild naam, links, "Powered by Blueprint CMS v1.6.0"
+
+## [1.7.0] — 2026-06-06 — Sprint 8: Debug + Fixes + Roadmap Update
+
+### Opgelost (15 kritieke bugs)
+
+**Bug fixes**
+- `BlockController.php` — `$this->registry->db()` bestond niet → directe `Connection` dependency toegevoegd (KRITIEK)
+- `src/Modules/Users/OAuthController.php` — volledig ontbrak terwijl Router ernaar verwees → aangemaakt met Discord + Twitch dispatch (KRITIEK)
+- `modules/warcraft/templates/guild.php` — ontbrak → aangemaakt (KRITIEK)
+- `modules/warcraft/templates/character.php` — ontbrak → aangemaakt met iLvl + M+ score (KRITIEK)
+- `modules/minecraft/src/MinecraftController.php` — ontbrak → aangemaakt (KRITIEK)
+- `modules/minecraft/templates/index.php` — ontbrak → aangemaakt (KRITIEK)
+- `modules/fivem/src/FiveMController.php` — ontbrak → aangemaakt (KRITIEK)
+- `modules/fivem/templates/index.php` — ontbrak → aangemaakt (KRITIEK)
+- `modules/guild-management/templates/admin.php` — ontbrak → aangemaakt met volledige admin UI (KRITIEK)
+- `src/Modules/Marketplace/views/detail.php` — ontbrak → aangemaakt (KRITIEK)
+- `themes/default/templates/news/show.twig` — ontbrak → aangemaakt (KRITIEK)
+- `themes/default/templates/pages/default.twig` + `full.twig` — ontbraken → aangemaakt (KRITIEK)
+- `PackageManager.php` — CF_ROOT class constants werkten niet vóór Application bootstrap → runtime methoden (WAARSCHUWING)
+- `AdminController.php` — settings() + handle() methoden ontbraken → toegevoegd + settings.php view (KRITIEK)
+- `ThemeManager.php` — render_block() Twig function niet geregistreerd → setBlockRegistry() + Twig function (KRITIEK)
+
+**Verbeteringen**
+- `Application.php` — BlockRegistry singleton + core blocks geregistreerd + ThemeManager↔BlockRegistry verbonden
+- `composer.json` — PSR-4 autoload uitgebreid met alle 7 module namespaces (modules/ viel buiten autoload)
+- `src/Modules/Settings/views/settings.php` — settings admin view aangemaakt
+
+### Roadmap bijgewerkt
+- Sprint 1-8 als voltooid gemarkeerd
+- Sprint 9-12 toegevoegd: Forum, YouTube/Kick, Premium ecosysteem, Multi-language
+- README.md volledig bijgewerkt met actuele status

@@ -24,9 +24,9 @@ use CommunityFusion\Core\Cache\CacheManager;
  */
 final class PackageManager
 {
-    private const DOWNLOAD_PATH = CF_ROOT . '/storage/marketplace/downloads';
-    private const MODULES_PATH  = CF_ROOT . '/modules';
-    private const THEMES_PATH   = CF_ROOT . '/themes';
+    private function downloadPath(): string { return CF_ROOT . '/storage/marketplace/downloads'; }
+    private function modulesPath(): string  { return CF_ROOT . '/modules'; }
+    private function themesPath(): string   { return CF_ROOT . '/themes'; }
 
     public function __construct(
         private readonly Connection   $db,
@@ -88,7 +88,7 @@ final class PackageManager
         $slug = preg_replace('/[-_]v?\d[\d.]*$/', '', pathinfo($originalName, PATHINFO_FILENAME));
         $slug = strtolower(preg_replace('/[^a-z0-9-]/', '-', $slug));
 
-        $zipPath = self::DOWNLOAD_PATH . '/' . $slug . '.zip';
+        $zipPath = $this->downloadPath() . '/' . $slug . '.zip';
         move_uploaded_file($tmpPath, $zipPath);
 
         $manifest    = $this->extractAndValidate($zipPath, $slug);
@@ -123,7 +123,7 @@ final class PackageManager
         }
 
         // Voer uninstall() uit op de module indien mogelijk
-        $manifestPath = ($installed['type'] === 'theme' ? self::THEMES_PATH : self::MODULES_PATH) . "/{$slug}/module.json";
+        $manifestPath = ($installed['type'] === 'theme' ? $this->themesPath() : $this->modulesPath()) . "/{$slug}/module.json";
         if (file_exists($manifestPath)) {
             $manifest = json_decode(file_get_contents($manifestPath), true);
             $class    = $manifest['class'] ?? null;
@@ -298,7 +298,7 @@ final class PackageManager
 
     private function download(string $slug, string $url): string
     {
-        $zipPath = self::DOWNLOAD_PATH . "/{$slug}.zip";
+        $zipPath = $this->downloadPath() . "/{$slug}.zip";
 
         $ch = curl_init($url);
         curl_setopt_array($ch, [
@@ -326,7 +326,7 @@ final class PackageManager
 
     private function extractAndValidate(string $zipPath, string $slug): array
     {
-        $extractTo = self::DOWNLOAD_PATH . "/{$slug}_extracted";
+        $extractTo = $this->downloadPath() . "/{$slug}_extracted";
 
         // Verwijder eventuele vorige extractie
         if (is_dir($extractTo)) $this->deleteDirectory($extractTo);
@@ -383,8 +383,8 @@ final class PackageManager
 
     private function deployPackage(string $slug, string $type): string
     {
-        $sourcePath = self::DOWNLOAD_PATH . "/{$slug}_extracted";
-        $destPath   = ($type === 'theme' ? self::THEMES_PATH : self::MODULES_PATH) . "/{$slug}";
+        $sourcePath = $this->downloadPath() . "/{$slug}_extracted";
+        $destPath   = ($type === 'theme' ? $this->themesPath() : $this->modulesPath()) . "/{$slug}";
 
         // Verwijder bestaande installatie
         if (is_dir($destPath)) $this->deleteDirectory($destPath);
@@ -435,7 +435,7 @@ final class PackageManager
         if (!$class || !class_exists($class)) return;
 
         try {
-            $moduleFile = self::MODULES_PATH . "/{$slug}/src/" . basename(str_replace('\\', '/', $class)) . '.php';
+            $moduleFile = $this->modulesPath() . "/{$slug}/src/" . basename(str_replace('\\', '/', $class)) . '.php';
             if (file_exists($moduleFile)) require_once $moduleFile;
 
             if (class_exists($class)) {
@@ -455,7 +455,7 @@ final class PackageManager
 
     private function ensureDirectories(): void
     {
-        foreach ([self::DOWNLOAD_PATH, self::MODULES_PATH, self::THEMES_PATH] as $dir) {
+        foreach ([$this->downloadPath(), $this->modulesPath(), $this->themesPath()] as $dir) {
             if (!is_dir($dir)) mkdir($dir, 0755, true);
         }
     }
