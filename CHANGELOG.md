@@ -18,6 +18,65 @@ Versienummering volgt [Semantic Versioning](https://semver.org/lang/nl/).
 
 ---
 
+## [1.8.0] — 2026-06-06 — Sprint 9: WoW Module v2 — Guild Roster & Character Armory
+
+### Toegevoegd
+
+**World of Warcraft Module — Volledige herbouw naar Blizzard API v2**
+
+- `modules/warcraft/src/roster.php` — Guild Roster v2.0
+  - Live guild leden via `eu.api.blizzard.com/data/wow/guild/{realm}/{guild}/roster`
+  - Namespace: `profile-eu` — token via `Authorization: Bearer` header (aug 2024 verplichting)
+  - Avatar per lid via `/character-media` endpoint (gecached 24 uur per karakter)
+  - Sortering op rank → naam, class-kleur glow per kaart
+  - Live JavaScript zoekfilter + class dropdown (geen pagina reload)
+  - Paginering instelbaar via shortcode attribuut (`per_page`)
+  - Alts (rank 7+) optioneel verbergen (`show_alts="no"`)
+  - Rank labels aanpasbaar via `add_filter('sa_roster_rank_labels')`
+  - AJAX cache-flush knop in admin tab (nonce beveiligd)
+  - Shortcodes: `[guild_roster]` · `[guild_roster show_alts="no" per_page="20"]`
+
+- `modules/warcraft/src/armory.php` — Character Armory v2.0
+  - 5 Blizzard API calls per karakter: summary + media + equipment + achievements/statistics
+  - Full 3D character render via `/character-media` (main-raw asset)
+  - 18 uitrustingslots met ilvl + kwaliteitskleur (grijs/groen/blauw/paars/oranje/legendarisch)
+  - Stat boxes: Item Level · Achievement Points · Laatste Login timestamp
+  - Externe links: WoW Armory · Raider.IO · WarcraftLogs (per karakter)
+  - Zoekformulier als `[sa_armory]` zonder params
+  - URL-parameter aanstuurbaar: `/armory/?char=Naam&realm=sporeggar`
+  - Gecached 1 uur per karakter via WP Transients
+  - AJAX cache-flush per karakter of alle armory caches tegelijk
+  - Shortcodes: `[sa_armory]` · `[sa_armory char="Dieouwe" realm="sporeggar"]`
+
+- `modules/warcraft/assets/roster.css` — Guild Roster dark stylesheet
+  - Slayer Alliance dark thema (bg `#0a0a0f`, accent `#a11692`, goud `#ccaa00`)
+  - Class-kleur glow per kaart via CSS custom property `--class-color`
+  - Responsive grid (auto-fill, minmax 200px)
+  - Rank badge styling per rank index (0 = GM goud, 1 = Officer zilver)
+
+- `modules/warcraft/assets/armory.css` — Character Armory dark stylesheet
+  - Hero layout met 3D render + profiel naast elkaar
+  - Item quality border-left kleuren (WoW standaard: groen/blauw/paars/oranje)
+  - Responsive: single column op mobiel
+
+- `modules/warcraft/INSTALL-roster-armory.md` — Volledige installatie handleiding
+
+### Gewijzigd
+
+- **WoW module blocks**: van 3 naar **5** (+ `roster.php` + `armory.php`)
+- **README.md**: versie badge bijgewerkt naar `1.8.0`, WoW module sectie uitgebreid met API endpoint tabel, roadmap Sprint 9 toegevoegd als ✅
+- Blizzard token authenticatie: token nu via `Authorization: Bearer` header in alle WoW API calls (niet via query string — verplicht na aug 2024 Blizzard gateway wijziging)
+
+### Security
+
+- Alle `$_GET` / `$_POST` input via `sanitize_text_field()` + `sanitize_title()`
+- Alle output via `esc_html()` · `esc_url()` · `esc_attr()`
+- AJAX handlers: `check_ajax_referer()` + `current_user_can('manage_options')`
+- `$wpdb->esc_like()` bij LIKE queries voor cache flush
+- Geen credentials hardcoded — alles via `sa_get_valid_token()` core functie
+
+---
+
 ## [1.0.0] — 2026-06-06 — Sprint 1: Core Foundation
 
 ### Toegevoegd
@@ -390,3 +449,4 @@ Versienummering volgt [Semantic Versioning](https://semver.org/lang/nl/).
 ### Bijgewerkt
 - `docs/ANALYSE.md` — volledig bijgewerkt met Sprint 8 resultaten, 0 issues resterend
 - Analyse bevestigt: 0 broken routes, 0 missing templates, 0 module issues
+
