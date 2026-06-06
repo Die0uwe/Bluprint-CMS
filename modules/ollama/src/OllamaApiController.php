@@ -1,0 +1,106 @@
+<?php
+// ============================================================================
+// Copyright (C) 2026  DieOuwe — GPL-3.0-or-later
+// ============================================================================
+declare(strict_types=1);
+namespace CommunityFusion\Modules\Ollama;
+
+use CommunityFusion\Core\Request;
+use CommunityFusion\Core\Response;
+use CommunityFusion\Core\Database\Connection;
+use CommunityFusion\Core\Cache\CacheManager;
+
+final class OllamaApiController
+{
+    private OllamaClient $client;
+
+    public function __construct(Connection $db, CacheManager $cache)
+    {
+        $config = [];
+        try {
+            $rows = $db->fetchAll("SELECT `key`,`value` FROM cf_settings WHERE `group`='ollama'");
+            foreach ($rows as $r) $config[$r['key']] = $r['value'];
+        } catch (\Throwable) {}
+
+        $this->client = new OllamaClient(
+            host:         $config['host']          ?? 'http://localhost:11434',
+            model:        $config['default_model'] ?? 'llama3.2',
+            timeout:      (int)($config['timeout'] ?? 30),
+            cache:        $cache,
+            openWebUiUrl: $config['open_webui_url'] ?? '',
+            openWebUiKey: $config['open_webui_key'] ?? '',
+        );
+    }
+
+    /**
+     * POST /api/ollama/chat
+     * Body: { "messages": [{"role":"user","content":"..."}] }
+     */
+    public function chat(Request $request): Response
+    {
+        $messages = $request->input('messages', []);
+        if (empty($messages) || !is_array($messages)) {
+            return Response::json(['error' => 'messages array vereist.'], 422);
+        }
+
+        // Sanitize messages
+        $clean = [];
+        foreach ($messages as $m) {
+            if (isset($m['role'], $m['content']) && in_array($m['role'], ['user','assistant','system'])) {
+                $clean[] = ['role' => $m['role'], 'content' => substr((string)$m['content'], 0, 2000)];
+            }
+        }
+
+        if (empty($clean)) {
+            return Response::json(['error' => 'Geen geldige berichten.'], 422);
+        }
+
+        try {
+            $reply = $this->client->communityChat($clean);
+            return Response::json(['reply' => $reply, 'ok' => true]);
+        } catch (\RuntimeException $e) {
+            return Response::json(['error' => 'AI niet beschikbaar: ' . $e->getMessage()], 503);
+        }
+    }
+
+    /**
+     * POST /api/ollama/summarize
+     * Body: { "content": "...", "title": "..." }
+     */
+    public function summarize(Request $request): Response
+    {
+        $content = $request->input('content', '');
+        $title   = $request->input('title', '');
+
+        if (empty($content)) {
+            return Response::json(['error' => 'content is verplicht.'], 422);
+        }
+
+        try {
+            $summary = $this->client->summarizeNews($content, $title);
+            return Response::json(['summary' => $summary, 'ok' => true]);
+        } catch (\RuntimeException $e) {
+            return Response::json(['error' => 'Samenvatting mislukt.'], 503);
+        }
+    }
+
+    /**
+     * GET /api/ollama/models — beschikbare Ollama modellen
+     */
+    public function models(Request $request): Response
+    {
+        if (!$this->client->isAvailable()) {
+            return Response::json(['available' => false, 'models' => []]);
+        }
+
+        $models = $this->client->listModels();
+        return Response::json([
+            'available' => true,
+            'models'    => array_map(fn($m) => [
+                'name'        => $m['name'] ?? '',
+                'size'        => $m['size'] ?? 0,
+                'modified_at' => $m['modified_at'] ?? '',
+            ], $models),
+        ]);
+    }
+}

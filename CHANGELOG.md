@@ -242,3 +242,49 @@ Versienummering volgt [Semantic Versioning](https://semver.org/lang/nl/).
 - WoW: guild naam gradient, progress bars, character stats, Raider.IO score kleuren
 - Minecraft: server status, MOTD, spelers-chips
 - FiveM: status, spelers-chips, ping-badge
+
+## [1.5.0] — 2026-06-06 — Sprint 6: REST API v1 Compleet + Ollama AI Integratie
+
+### Toegevoegd
+
+**REST API v1 — Volledig OAS-compliant**
+- `src/Api/V1/StatusController.php` — GET /api/v1/status: versie, PHP, DB status, timestamp
+- `src/Api/V1/AuthController.php` — POST /api/v1/auth/login (JWT token), GET /api/v1/auth/me
+- `src/Api/V1/UsersController.php` — GET /api/v1/users (paginering, admin only), GET /api/v1/users/{id}
+- `src/Api/V1/ContentController.php` — GET /api/v1/news, /api/v1/news/{slug}, /api/v1/pages, /api/v1/blocks/zones
+
+**Middleware**
+- `src/Api/Middleware/RateLimitMiddleware.php` — 60 req/min per IP, X-RateLimit headers, 429 response
+- `src/Api/Middleware/CorsMiddleware.php` — CORS headers voor alle API routes, OPTIONS preflight
+
+**Router v1.2.0**
+- Alle REST API v1 routes met CORS + RateLimit middleware
+- GET /api/v1/auth/me met Auth middleware
+- Middleware stacking: CORS + Auth + RateLimit combineerbaar
+
+**Ollama AI Module** (`modules/ollama/`)
+- `module.json` — Manifest: blocks, settings (host, model, timeout, system_prompt, Open WebUI)
+- `OllamaClient.php` — Volledig PHP client voor Ollama REST API:
+  - `generate()` — enkelvoudige prompt
+  - `chat()` — multi-turn conversatie met geschiedenis
+  - `embed()` — embedding vectors
+  - `listModels()` — beschikbare modellen
+  - `isAvailable()` — health check (3s timeout)
+  - `chatViaOpenWebUI()` — OpenAI-compatible API via Open WebUI v0.9.2
+  - `summarizeNews()` — nieuws samenvatting met cache
+  - `analyzeGuildApplication()` — WoW guild aanmelding AI-beoordeling
+  - `communityChat()` — context-aware community chatbot
+  - `generateRecruitmentPost()` — AI guild recruitment tekst
+- `OllamaModule.php` — Boot: blocks, routes, guild application hook (auto AI analyse)
+- `OllamaChatBlock.php` — Live chat widget met AJAX, gesprekgeschiedenis, typing indicator
+- `OllamaAssistantBlock.php` — Statische AI content: tips, recruitment, welkomst (1u cache)
+- `OllamaApiController.php` — POST /api/ollama/chat, POST /api/ollama/summarize, GET /api/ollama/models
+- `OllamaAdminController.php` — Instellingen admin, model overzicht, verbindingstest
+- `templates/admin.php` — Admin UI: status badge, model lijst, settings form, Docker instructies
+
+**Open WebUI Analyse** (zie rapport hieronder)
+- Geïntegreerd als optionele backend naast directe Ollama
+- OllamaClient detecteert automatisch fallback naar directe Ollama als Open WebUI niet beschikbaar
+
+### Gewijzigd
+- `src/Core/Router.php` v1.2.0 — REST API + middleware stack uitgebreid
