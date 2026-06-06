@@ -288,3 +288,45 @@ Versienummering volgt [Semantic Versioning](https://semver.org/lang/nl/).
 
 ### Gewijzigd
 - `src/Core/Router.php` v1.2.0 — REST API + middleware stack uitgebreid
+
+## [1.6.0] — 2026-06-06 — Sprint 7: Marketplace
+
+### Toegevoegd
+
+**Marketplace Database Schema**
+- `cf_marketplace_packages` — Package catalogus (slug, type, versie, download URL, tags, downloads, rating, featured, verified, premium)
+- `cf_marketplace_installed` — Installatie registry (versie, pad, enabled status, update beschikbaar)
+- `cf_marketplace_reviews` — Beoordelingen per package (rating, review tekst)
+- Seed-data: 7 modules + 1 thema met realistisch downloadaantal
+
+**PackageManager** (`src/Core/Marketplace/PackageManager.php`)
+- `install(slug, url)` — Download ZIP → path-traversal validatie → extractie → manifest validatie → deployen → DB registreren → module installer uitvoeren
+- `installFromUpload(tmp, name)` — Installatie vanuit geüpload bestand
+- `uninstall(slug)` — Veiligheidscheck (core modules blokkeren) → uninstall hook → bestanden verwijderen → DB cleanup
+- `update(slug)` — Bestaande installatie vervangen door nieuwste versie
+- `enable(slug)` / `disable(slug)` — Module in/uitschakelen (core blokkeert)
+- `checkForUpdates()` — Vergelijk geïnstalleerde vs catalogus versies (gecached 1u)
+- `getCatalog(type, search, sortBy, limit, offset)` — Gefilterde/gesorteerde catalogus (gecached 5min)
+- `getInstalledPackages()` — Alle geïnstalleerde packages met catalogusinfo
+
+**InstallResult + PackageException** — Type-safe value objects
+
+**MarketplaceController** (`src/Modules/Marketplace/MarketplaceController.php`)
+- GET /admin/marketplace — Volledig admin UI (4 tabs)
+- POST /admin/marketplace/install — Package installeren via URL
+- POST /admin/marketplace/upload — ZIP upload installatie
+- POST /admin/marketplace/uninstall — Package verwijderen
+- POST /admin/marketplace/toggle — Enable/disable
+- POST /admin/marketplace/update — Update naar nieuwste versie
+- GET /api/v1/marketplace — Publieke catalogus API
+- GET /api/v1/marketplace/installed — Geïnstalleerde packages (auth)
+- GET /api/v1/marketplace/updates — Beschikbare updates (auth)
+
+**Marketplace Admin UI** (`src/Modules/Marketplace/views/index.php`)
+- Tab 1 — Browsen: package grid met zoeken, type-filters, sortering
+- Tab 2 — Geïnstalleerd: toggle switches, update badges, verwijder knoppen
+- Tab 3 — Updates: update-beschikbaar lijst, bulk update knop
+- Tab 4 — ZIP Upload: drag & drop zone, progress bar, validatie-instructies
+- Volledig Ajax (geen page reload) met toast notificaties
+
+**Router v1.3.0** — 10 marketplace routes toegevoegd (web + API)

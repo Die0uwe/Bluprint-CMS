@@ -233,3 +233,72 @@ INSERT INTO `cf_modules` (`slug`, `name`, `version`, `is_core`, `is_enabled`) VA
 ('settings', 'Instellingen',     '1.0.0', 1, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- ============================================================
+-- MARKETPLACE SCHEMA (Sprint 7)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS `cf_marketplace_packages` (
+    `id`            INT UNSIGNED        NOT NULL AUTO_INCREMENT,
+    `slug`          VARCHAR(100)        NOT NULL,
+    `type`          ENUM('module','theme','block') NOT NULL DEFAULT 'module',
+    `name`          VARCHAR(150)        NOT NULL,
+    `description`   TEXT                NULL,
+    `author`        VARCHAR(100)        NULL,
+    `author_url`    VARCHAR(300)        NULL,
+    `version`       VARCHAR(20)         NOT NULL,
+    `min_cms`       VARCHAR(20)         NOT NULL DEFAULT '1.0.0',
+    `license`       VARCHAR(50)         NOT NULL DEFAULT 'GPL-3.0',
+    `download_url`  VARCHAR(500)        NULL COMMENT 'ZIP download URL',
+    `homepage_url`  VARCHAR(500)        NULL,
+    `icon_url`      VARCHAR(500)        NULL,
+    `tags`          JSON                NULL,
+    `downloads`     INT UNSIGNED        NOT NULL DEFAULT 0,
+    `rating`        DECIMAL(3,2)        NULL,
+    `is_featured`   TINYINT(1)          NOT NULL DEFAULT 0,
+    `is_verified`   TINYINT(1)          NOT NULL DEFAULT 0,
+    `is_premium`    TINYINT(1)          NOT NULL DEFAULT 0,
+    `price`         DECIMAL(8,2)        NULL COMMENT 'NULL = gratis',
+    `created_at`    DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`    DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_slug` (`slug`),
+    KEY `idx_type` (`type`),
+    KEY `idx_featured` (`is_featured`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `cf_marketplace_installed` (
+    `id`            INT UNSIGNED        NOT NULL AUTO_INCREMENT,
+    `package_slug`  VARCHAR(100)        NOT NULL,
+    `type`          ENUM('module','theme','block') NOT NULL DEFAULT 'module',
+    `version`       VARCHAR(20)         NOT NULL,
+    `installed_at`  DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `installed_by`  INT UNSIGNED        NULL,
+    `update_available` VARCHAR(20)      NULL COMMENT 'Versie van beschikbare update',
+    `is_enabled`    TINYINT(1)          NOT NULL DEFAULT 1,
+    `install_path`  VARCHAR(300)        NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_slug` (`package_slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `cf_marketplace_reviews` (
+    `id`            INT UNSIGNED        NOT NULL AUTO_INCREMENT,
+    `package_slug`  VARCHAR(100)        NOT NULL,
+    `user_id`       INT UNSIGNED        NOT NULL,
+    `rating`        TINYINT UNSIGNED    NOT NULL COMMENT '1-5 sterren',
+    `review`        TEXT                NULL,
+    `created_at`    DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_user_pkg` (`package_slug`, `user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Seed: ingebouwde modules als marketplace entries
+INSERT IGNORE INTO `cf_marketplace_packages` (slug, type, name, description, author, version, is_verified, downloads, is_featured) VALUES
+('discord',          'module', 'Discord Integration',       'OAuth login, rollen sync, widgets, live stats',                    'DieOuwe',   '1.0.0', 1, 1247, 1),
+('twitch',           'module', 'Twitch Integration',        'Live status, stream embeds, kanaal statistieken',                  'DieOuwe',   '1.0.0', 1, 893,  1),
+('warcraft',         'module', 'World of Warcraft',         'Guild roster, raid progress, character via Blizzard + Raider.IO',  'DieOuwe',   '1.0.0', 1, 734,  1),
+('guild-management', 'module', 'Guild Management',          'Leden, teams, rangen, aanmeldingen, events',                       'DieOuwe',   '1.0.0', 1, 612,  1),
+('minecraft',        'module', 'Minecraft Server Status',   'Server status, online spelers, MOTD via mcsrvstat.us',             'DieOuwe',   '1.0.0', 1, 521,  0),
+('fivem',            'module', 'FiveM Server Status',       'FXServer status, spelers, ping via /info.json',                    'DieOuwe',   '1.0.0', 1, 388,  0),
+('ollama',           'module', 'Ollama AI Integratie',      'Gratis lokale AI chat, content assistent, Open WebUI koppeling',   'DieOuwe',   '1.0.0', 1, 298,  1),
+('default',          'theme',  'Blueprint Default',         'Gaming dark thema — het standaard Blueprint CMS thema',            'DieOuwe',   '1.0.0', 1, 2341, 1);

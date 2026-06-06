@@ -129,6 +129,19 @@ final class Router
         $this->get('/api/v1/blocks/zones',         'CommunityFusion\Modules\Blocks\BlockController@getZonesApi', $cors);
         $this->post('/api/v1/blocks/positions',    'CommunityFusion\Modules\Blocks\BlockController@savePositions', $auth);
 
+
+        // ── Marketplace ────────────────────────────────────────────────────
+        $this->get('/admin/marketplace',                      'CommunityFusion\Modules\Marketplace\MarketplaceController@index',     $auth);
+        $this->get('/admin/marketplace/package/{slug:[a-z0-9-]+}', 'CommunityFusion\Modules\Marketplace\MarketplaceController@detail',  $auth);
+        $this->post('/admin/marketplace/install',             'CommunityFusion\Modules\Marketplace\MarketplaceController@install',   $auth);
+        $this->post('/admin/marketplace/upload',              'CommunityFusion\Modules\Marketplace\MarketplaceController@upload',    $auth);
+        $this->post('/admin/marketplace/uninstall',           'CommunityFusion\Modules\Marketplace\MarketplaceController@uninstall',$auth);
+        $this->post('/admin/marketplace/toggle',              'CommunityFusion\Modules\Marketplace\MarketplaceController@toggle',    $auth);
+        $this->post('/admin/marketplace/update',              'CommunityFusion\Modules\Marketplace\MarketplaceController@update',    $auth);
+        $this->get('/api/v1/marketplace',                     'CommunityFusion\Modules\Marketplace\MarketplaceController@apiCatalog',  $cors);
+        $this->get('/api/v1/marketplace/installed',           'CommunityFusion\Modules\Marketplace\MarketplaceController@apiInstalled', [...$cors,...$auth]);
+        $this->get('/api/v1/marketplace/updates',             'CommunityFusion\Modules\Marketplace\MarketplaceController@apiUpdates',   [...$cors,...$auth]);
+
         // ── OAuth Callbacks ─────────────────────────────────────────────
         $this->get('/auth/discord/callback', 'CommunityFusion\Modules\Users\OAuthController@discordCallback');
         $this->get('/auth/twitch/callback',  'CommunityFusion\Modules\Users\OAuthController@twitchCallback');
