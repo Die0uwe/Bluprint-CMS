@@ -1,0 +1,12 @@
+{
+    "slug":        "minecraft",
+    "name":        "Minecraft Server Status",
+    "version":     "1.0.0",
+    "description": "Toont Minecraft server status, online spelers en whitelist info.",
+    "author":      "DieOuwe",
+    "min_cms":     "1.0.0",
+    "class":       "CommunityFusion\\Modules\\Minecraft\\MinecraftModule",
+    "is_core":     false,
+    "blocks":      ["minecraft-status"],
+    "permissions": ["minecraft.view"]
+}

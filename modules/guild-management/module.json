@@ -1,0 +1,12 @@
+{
+    "slug":        "guild-management",
+    "name":        "Guild Management",
+    "version":     "1.0.0",
+    "description": "Beheert guild leden, teams, rangen, aanmeldingen en events voor gaming communities.",
+    "author":      "DieOuwe",
+    "min_cms":     "1.0.0",
+    "class":       "CommunityFusion\\Modules\\Guild\\GuildModule",
+    "is_core":     false,
+    "blocks":      ["guild-members", "guild-info", "guild-recruitment"],
+    "permissions": ["guild.view", "guild.manage", "guild.recruit", "guild.admin"]
+}

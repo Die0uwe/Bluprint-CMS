@@ -200,3 +200,45 @@ Versienummering volgt [Semantic Versioning](https://semver.org/lang/nl/).
 **CSS uitgebreid**
 - Discord: widget, online leden, avatar, status dot
 - Twitch: live badge, thumbnail, channel link, embed wrap
+
+## [1.4.0] — 2026-06-06 — Sprint 5: Guild Management + WoW + Minecraft + FiveM
+
+### Toegevoegd
+
+**Guild Management Module** (`modules/guild-management/`)
+- `GuildModule.php` — Boot + installer: DB schema (cf_guild_ranks, cf_guild_members, cf_guild_teams, cf_guild_applications), seed-rangen (GM/Officer/Raider/Trial/Social)
+- `GuildController.php` — Publieke pagina's: index, roster (met rang-filter), aanmelding
+- `GuildAdminController.php` — Admin: aanmeldingen beheren, approve (→ trial lid), reject
+- `GuildMembersBlock.php` — Blok: actieve leden gesorteerd op rang, class-iconen, iLvl
+- `GuildInfoBlock.php` — Blok: statistieken (leden/aanmeldingen), teams, aanmeld-knop
+- `GuildRecruitmentBlock.php` — Blok: vrije tekst + actief wervende teams
+- `templates/apply.php` — Aanmeldingsformulier: karakter/klasse/spec/iLvl/team/motivatie
+- `templates/members.php` — Roster met rang-filters, kleur-coded karakterkaarten
+
+**World of Warcraft Module** (`modules/warcraft/`)
+- `BlizzardApiClient.php` — Battle.net OAuth2 Client Credentials API client:
+  guild roster, guild info, guild activity, character profiel, equipment,
+  Mythic+ score via Raider.IO, raid progress via Raider.IO, realm status.
+  Volledige response cache (PSR-16). Regio/locale configureerbaar.
+- `WarcraftModule.php` — Boot + blok registratie + admin/public routes
+- `WarcraftController.php` — Publiek: index (guild + progress), guild roster, character
+- `WarcraftAdminController.php` — Admin instellingen: API keys, realm, guild, regio
+- `WowGuildRosterBlock.php` — Blok: live roster via Blizzard API, klasse-kleuren, rang-iconen
+- `WowMythicProgressBlock.php` — Blok: Normal/Heroic/Mythic progress bars via Raider.IO
+- `WowCharacterBlock.php` — Blok: character profiel + iLvl + Raider.IO M+ score
+- `templates/index.php` — WoW pagina: guild hero banner, raid progress, top roster
+- `templates/admin.php` — Admin settings form met API-instructies
+
+**Minecraft Module** (`modules/minecraft/`)
+- `MinecraftModule.php` — Module boot + routes
+- `MinecraftStatusBlock.php` — Server status via mcsrvstat.us API: online/offline, versie, spelers-count, MOTD, spelerslijst (60s cache)
+
+**FiveM Module** (`modules/fivem/`)
+- `FiveMModule.php` — Module boot + routes
+- `FiveMStatusBlock.php` — Server status via FXServer /info.json + /players.json: online/offline, spelerlijst met ping, bezetting-balk (45s cache)
+
+**CSS uitgebreid**
+- Guild: member-rows, stats, teams, recruitment
+- WoW: guild naam gradient, progress bars, character stats, Raider.IO score kleuren
+- Minecraft: server status, MOTD, spelers-chips
+- FiveM: status, spelers-chips, ping-badge

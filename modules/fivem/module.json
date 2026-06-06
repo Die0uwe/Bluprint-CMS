@@ -1,0 +1,12 @@
+{
+    "slug":        "fivem",
+    "name":        "FiveM Server Status",
+    "version":     "1.0.0",
+    "description": "FiveM server status, speler overzicht en Discord koppeling.",
+    "author":      "DieOuwe",
+    "min_cms":     "1.0.0",
+    "class":       "CommunityFusion\\Modules\\FiveM\\FiveMModule",
+    "is_core":     false,
+    "blocks":      ["fivem-status"],
+    "permissions": ["fivem.view"]
+}

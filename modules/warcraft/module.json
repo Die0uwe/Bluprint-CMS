@@ -1,0 +1,21 @@
+{
+    "slug":        "warcraft",
+    "name":        "World of Warcraft",
+    "version":     "1.0.0",
+    "description": "WoW guild roster, character armory, raid progress en mythic+ scores via Blizzard API.",
+    "author":      "DieOuwe",
+    "author_url":  "https://www.slayeralliance.com",
+    "min_cms":     "1.0.0",
+    "class":       "CommunityFusion\\Modules\\Warcraft\\WarcraftModule",
+    "is_core":     false,
+    "blocks":      ["wow-guild-roster", "wow-mythic-progress", "wow-character"],
+    "permissions": ["wow.view", "wow.admin"],
+    "settings": [
+        {"key": "client_id",     "label": "Battle.net Client ID",     "type": "string"},
+        {"key": "client_secret", "label": "Battle.net Client Secret", "type": "encrypted"},
+        {"key": "region",        "label": "Regio (eu/us/kr/tw)",      "type": "string", "default": "eu"},
+        {"key": "realm",         "label": "Realm naam",               "type": "string"},
+        {"key": "guild_name",    "label": "Guild naam",               "type": "string"},
+        {"key": "locale",        "label": "Locale (en_GB/nl_NL/...)", "type": "string", "default": "en_GB"}
+    ]
+}
