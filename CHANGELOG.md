@@ -381,3 +381,12 @@ Versienummering volgt [Semantic Versioning](https://semver.org/lang/nl/).
 - Sprint 1-8 als voltooid gemarkeerd
 - Sprint 9-12 toegevoegd: Forum, YouTube/Kick, Premium ecosysteem, Multi-language
 - README.md volledig bijgewerkt met actuele status
+
+## [1.7.1] — 2026-06-06 — Finale analyse + docs
+
+### Opgelost
+- `AbstractBlock.php` — `getName()` abstract method ontbrak → toegevoegd
+
+### Bijgewerkt
+- `docs/ANALYSE.md` — volledig bijgewerkt met Sprint 8 resultaten, 0 issues resterend
+- Analyse bevestigt: 0 broken routes, 0 missing templates, 0 module issues

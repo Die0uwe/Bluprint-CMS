@@ -18,6 +18,10 @@ namespace CommunityFusion\Blocks;
 
 abstract class AbstractBlock implements BlockInterface
 {
+    /**
+     * Naam van het block type — implementeer in concrete class.
+     */
+    abstract public function getName(): string;
     public function validateConfig(array $config): void {}
     public function getCacheTtl(): int { return 0; }
 }
