@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 // Step 3 — Site Instellingen
 
 $siteName = trim($_POST['site_name'] ?? '');

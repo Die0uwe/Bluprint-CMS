@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 // Step 1 — Server Requirements Check
 // Geeft true terug als alles OK is, anders array van fouten
 

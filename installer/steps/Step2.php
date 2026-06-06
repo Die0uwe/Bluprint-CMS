@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 // Step 2 — Database Verbinding Testen + Schema Importeren
 
 $host   = trim($_POST['db_host'] ?? '127.0.0.1');

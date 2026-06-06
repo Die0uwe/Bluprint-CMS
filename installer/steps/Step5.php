@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 // Step 5 — Modules selecteren + Config schrijven + Afronden
 
 $selectedModules = $_POST['modules'] ?? ['users', 'news', 'pages', 'settings'];

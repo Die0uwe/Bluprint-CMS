@@ -1,3 +1,4 @@
+<?php
 <form method="POST">
   <div class="form-group">
     <label>Gebruikersnaam</label>
