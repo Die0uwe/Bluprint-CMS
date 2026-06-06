@@ -1,0 +1,18 @@
+{
+    "name":        "Blueprint Default",
+    "version":     "1.0.0",
+    "author":      "DieOuwe",
+    "description": "Donker gaming-thema voor Blueprint CMS",
+    "colors": {
+        "bg":       "#0a0c14",
+        "surface":  "#111827",
+        "accent":   "#6c3df4",
+        "accent2":  "#a855f7",
+        "gold":     "#f59e0b",
+        "text":     "#e2e8f0",
+        "muted":    "#64748b",
+        "success":  "#10b981",
+        "error":    "#ef4444"
+    },
+    "supports": ["dark_mode", "responsive", "mobile_first"]
+}

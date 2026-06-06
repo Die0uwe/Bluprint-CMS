@@ -1,0 +1,118 @@
+<?php
+// ============================================================================
+// Copyright (C) 2026  DieOuwe (https://www.dieouwe.nl / https://www.slayeralliance.com)
+// GPL-3.0-or-later
+// ============================================================================
+
+declare(strict_types=1);
+
+namespace CommunityFusion\Core\Template;
+
+/**
+ * ThemeManager — beheert het actieve thema en rendert Twig-templates.
+ * Laadt thema-configuratie uit theme.json en biedt een render() methode.
+ */
+final class ThemeManager
+{
+    private \Twig\Environment $twig;
+    private array $themeConfig = [];
+    private string $activeTheme;
+
+    public function __construct(
+        private readonly string $themesPath,
+        string $theme = 'default',
+    ) {
+        $this->activeTheme = $theme;
+        $this->boot();
+    }
+
+    private function boot(): void
+    {
+        $themePath = $this->themesPath . '/' . $this->activeTheme;
+
+        if (!is_dir($themePath)) {
+            $themePath = $this->themesPath . '/default';
+        }
+
+        // Laad theme.json
+        $jsonPath = $themePath . '/theme.json';
+        if (file_exists($jsonPath)) {
+            $this->themeConfig = json_decode(file_get_contents($jsonPath), true) ?? [];
+        }
+
+        // Twig setup
+        $loader     = new \Twig\Loader\FilesystemLoader($themePath . '/templates');
+        $this->twig = new \Twig\Environment($loader, [
+            'cache'       => CF_ROOT . '/storage/cache/twig',
+            'auto_reload' => true,
+            'debug'       => ($_ENV['APP_DEBUG'] ?? 'false') === 'true',
+        ]);
+
+        // Globale variabelen beschikbaar in alle templates
+        $this->twig->addGlobal('theme', $this->themeConfig);
+        $this->twig->addGlobal('cms_version', CF_VERSION ?? '1.0.0');
+
+        // Custom Twig functies
+        $this->registerFunctions();
+    }
+
+    /**
+     * Render een Twig-template naar HTML.
+     *
+     * @param string $template Relatief pad: 'news/index.twig'
+     * @param array  $vars     Template variabelen
+     */
+    public function render(string $template, array $vars = []): string
+    {
+        return $this->twig->render($template, $vars);
+    }
+
+    /**
+     * Render een blok via zijn PHP render()-methode en geef HTML terug.
+     */
+    public function renderBlock(array $blockRow, array $context = []): string
+    {
+        // Block rendering wordt door BlockManager afgehandeld
+        return '';
+    }
+
+    public function getConfig(): array
+    {
+        return $this->themeConfig;
+    }
+
+    public function getActiveTheme(): string
+    {
+        return $this->activeTheme;
+    }
+
+    public function getTwig(): \Twig\Environment
+    {
+        return $this->twig;
+    }
+
+    private function registerFunctions(): void
+    {
+        // {{ asset('css/style.css') }} → /assets/css/style.css
+        $this->twig->addFunction(new \Twig\TwigFunction('asset', function(string $path): string {
+            return '/assets/' . ltrim($path, '/');
+        }));
+
+        // {{ url('/nieuws') }} → https://site.nl/nieuws
+        $this->twig->addFunction(new \Twig\TwigFunction('url', function(string $path): string {
+            $base = rtrim($_ENV['APP_URL'] ?? '', '/');
+            return $base . '/' . ltrim($path, '/');
+        }));
+
+        // {{ csrf_field() | raw }}
+        $this->twig->addFunction(new \Twig\TwigFunction('csrf_field', function(): string {
+            return \CommunityFusion\Core\Security\CsrfProtection::field();
+        }));
+    }
+}
+
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║  File: ThemeManager.php | Role: Core | Version: 1.0.0               ║
+// ║  Created: 2026-06-06 | Status: New                                  ║
+// ║  Created by Dieouwe — www.dieouwe.nl | discord.gg/y8Pu5qsEbQ        ║
+// ╚══════════════════════════════════════════════════════════════════════╝

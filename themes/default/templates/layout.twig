@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="{{ settings.locale|default('nl') }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{{ page_title|default('') }}{% endblock %}{% if settings.site_name is defined %} — {{ settings.site_name }}{% endif %}</title>
+<meta name="description" content="{% block meta_desc %}{{ settings.site_description|default('') }}{% endblock %}">
+<link rel="stylesheet" href="{{ asset('css/blueprint.css') }}">
+{% block head %}{% endblock %}
+</head>
+<body class="cf-theme-dark">
+
+{# HEADER ZONE #}
+<header id="cf-header">
+  <div class="cf-container">
+    <a href="/" class="cf-logo">
+      🔮 {{ settings.site_name|default('Blueprint CMS') }}
+    </a>
+    <nav class="cf-nav">
+      {% for page in menu_pages %}
+        <a href="/page/{{ page.slug }}" class="cf-nav-link">{{ page.title }}</a>
+      {% endfor %}
+    </nav>
+    <div class="cf-header-actions">
+      {% if auth.check() %}
+        <a href="/admin" class="cf-btn-sm">Admin</a>
+        <a href="/logout" class="cf-btn-sm cf-btn-ghost">Uitloggen</a>
+      {% else %}
+        <a href="/login" class="cf-btn-sm">Inloggen</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+{# MAIN LAYOUT #}
+<div id="cf-main" class="cf-layout">
+
+  {# LINKER SIDEBAR #}
+  {% if zones.sidebar_left is defined and zones.sidebar_left %}
+  <aside id="cf-sidebar-left" class="cf-sidebar">
+    {% for block in zones.sidebar_left %}
+      {{ render_block(block)|raw }}
+    {% endfor %}
+  </aside>
+  {% endif %}
+
+  {# CENTER CONTENT #}
+  <main id="cf-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  {# RECHTER SIDEBAR #}
+  {% if zones.sidebar_right is defined and zones.sidebar_right %}
+  <aside id="cf-sidebar-right" class="cf-sidebar">
+    {% for block in zones.sidebar_right %}
+      {{ render_block(block)|raw }}
+    {% endfor %}
+  </aside>
+  {% endif %}
+
+</div>
+
+{# FOOTER #}
+<footer id="cf-footer">
+  <div class="cf-container">
+    <p>© {{ "now"|date("Y") }} {{ settings.site_name|default('Blueprint CMS') }}</p>
+    <p class="cf-footer-links">
+      <a href="https://www.dieouwe.nl">DieOuwe</a> ·
+      <a href="https://www.slayeralliance.com">Slayer Alliance</a> ·
+      <a href="https://github.com/Die0uwe/Bluprint-CMS">GitHub</a>
+    </p>
+  </div>
+</footer>
+
+<script src="{{ asset('js/blueprint.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

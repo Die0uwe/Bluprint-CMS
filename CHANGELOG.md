@@ -99,3 +99,42 @@ Versienummering volgt [Semantic Versioning](https://semver.org/lang/nl/).
 ║  💬 discord.gg/y8Pu5qsEbQ                                           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 -->
+
+## [1.1.0] — 2026-06-06 — Sprint 2: Installer + Admin + Frontend
+
+### Toegevoegd
+
+**Web Installer (5 stappen)**
+- `installer/InstallerCore.php` — Installatie sessie, config schrijver, schema importer
+- `installer/index.php` — Installer front controller met step routing
+- `installer/steps/Step1.php` — Server requirements check (PHP, extensies, schrijfrechten)
+- `installer/steps/Step2.php` — Database verbinding + schema import
+- `installer/steps/Step3.php` — Site instellingen (naam, URL, taal, tijdzone)
+- `installer/steps/Step4.php` — Admin account aanmaken (argon2id)
+- `installer/steps/Step5.php` — Module selectie + config.php genereren
+- `installer/templates/layout.php` — Gaming dark wizard UI met stap-indicator
+- `installer/templates/step1-5.php` — Visuele formulieren per stap
+
+**Frontend Controllers**
+- `src/Modules/News/NewsController.php` — Nieuws index + detail pagina
+- `src/Modules/Pages/PageController.php` — Homepage + statische pagina's
+- `src/Modules/Users/AuthController.php` — Login, logout, registreren + CSRF
+- `src/Modules/Settings/AdminController.php` — Admin dashboard routing
+
+**Admin Dashboard**
+- `src/Modules/Settings/views/dashboard.php` — Volledig admin dashboard met sidebar, stat-cards, snelle acties, activiteitsfeed, systeem status
+
+**Template Engine**
+- `src/Core/Template/ThemeManager.php` — Twig 3.x integratie, theme.json loader, custom functies (asset, url, csrf_field)
+
+**Default Gaming Dark Thema**
+- `themes/default/theme.json` — Thema manifest + kleurenpalette
+- `themes/default/templates/layout.twig` — Hoofd layout met zones (header, sidebars, footer)
+- `themes/default/templates/home.twig` — Homepage met nieuws grid
+- `themes/default/templates/news/index.twig` — Nieuws overzicht
+- `themes/default/templates/auth/login.twig` — Login formulier
+- `themes/default/templates/auth/register.twig` — Registreer formulier
+
+**Frontend Assets**
+- `public/assets/css/blueprint.css` — Volledig gaming dark CSS (CSS variables, layout, cards, forms, responsive)
+- `public/assets/js/blueprint.js` — Core JS (nav-highlight, flash messages, scroll animaties)
