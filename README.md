@@ -14,8 +14,8 @@ GPL-3.0-or-later
 [![PHP](https://img.shields.io/badge/PHP-8.3%2B-777BB4?style=flat-square&logo=php)](https://php.net)
 [![MariaDB](https://img.shields.io/badge/MariaDB-10.11%2B-003545?style=flat-square&logo=mariadb)](https://mariadb.org)
 [![License](https://img.shields.io/badge/License-GPL--3.0-blue?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.7.0-brightgreen?style=flat-square)](CHANGELOG.md)
-[![Files](https://img.shields.io/badge/Bestanden-150%2B-orange?style=flat-square)]()
+[![Version](https://img.shields.io/badge/Version-1.8.0-brightgreen?style=flat-square)](CHANGELOG.md)
+[![Files](https://img.shields.io/badge/Bestanden-155%2B-orange?style=flat-square)](modules/warcraft/)
 
 *Geïnspireerd door PHP-Fusion · Down Under Fusion · ImpressCMS*
 
@@ -31,7 +31,7 @@ Blueprint CMS is een open-source, **modulair PHP-framework** speciaal gebouwd vo
 
 - 🎮 **Gaming communities** — guild management, server status, roster, raid progress
 - 📺 **Streamers** — Discord / Twitch / YouTube / Kick integratie out-of-the-box
-- ⚔️ **WoW Gilden** — Blizzard API + Raider.IO integratie, aanmeldingen, teams
+- ⚔️ **WoW Gilden** — Blizzard API v2 + Raider.IO integratie, guild roster, character armory, teams
 - 🤖 **AI-powered** — Gratis lokale AI via Ollama (llama3.2, mistral, gemma2) + Open WebUI
 - 🏢 **Verenigingen & bedrijven** — volledige website binnen 5 minuten
 
@@ -110,11 +110,39 @@ cp .env.example .env
 |---|---|---|
 | Discord | 2 | OAuth login, rollen sync, widget, online leden |
 | Twitch | 2 | Live status, stream embed, Helix API |
-| World of Warcraft | 3 | Blizzard API + Raider.IO — roster, progress, character |
+| **World of Warcraft** | **5** | **Blizzard API v2 (profile-eu) — Guild Roster v2, Character Armory v2, Raider.IO links, class renders, equipment ilvl** |
 | Guild Management | 3 | Aanmeldingen, leden, teams, rangen, admin |
 | Minecraft | 1 | Server status via mcsrvstat.us |
 | FiveM | 1 | Server status via FXServer endpoint |
 | Ollama AI | 2 | Chat widget, assistent, guild analyse, nieuws samenvatting |
+
+### ⚔️ World of Warcraft Module — v2.0 (nieuw in v1.8.0)
+
+**Guild Roster** — `[guild_roster]`
+- Live leden via `eu.api.blizzard.com` roster endpoint (`namespace=profile-eu`)
+- Avatar per lid via `/character-media` (gecached 24u)
+- Class-kleuren, rank badges, live zoekfilter + class dropdown
+- Paginering, alts verbergen, rank labels aanpasbaar via filter hook
+- Admin tab met AJAX cache-flush
+
+**Character Armory** — `[sa_armory]` of `/armory/?char=Naam&realm=sporeggar`
+- Full character render (3D model), avatar, spec, race, faction
+- Volledige uitrusting (18 slots) met ilvl + kwaliteitskleur (grijs/groen/blauw/paars/oranje)
+- Stat boxes: Item Level · Achievement Points · Laatste Login
+- Links: WoW Armory · Raider.IO · WarcraftLogs
+- Gecached 1 uur per karakter
+
+**API endpoints gebruikt:**
+
+| Endpoint | Namespace | Data |
+|---|---|---|
+| `/data/wow/guild/{realm}/{guild}/roster` | `profile-eu` | Guild leden |
+| `/profile/wow/character/{realm}/{name}` | `profile-eu` | Character summary |
+| `/profile/wow/character/{realm}/{name}/character-media` | `profile-eu` | Avatar + 3D render |
+| `/profile/wow/character/{realm}/{name}/equipment` | `profile-eu` | Gear + ilvl |
+| `/profile/wow/character/{realm}/{name}/achievements/statistics` | `profile-eu` | Achievement punten |
+
+> ⚠️ Token via `Authorization: Bearer` header — verplicht sinds aug 2024 (Blizzard API wijziging).
 
 ---
 
@@ -130,10 +158,11 @@ cp .env.example .env
 | **S6** | ✅ v1.5.0 | REST API v1 compleet + Ollama AI + Open WebUI |
 | **S7** | ✅ v1.6.0 | Marketplace (install, upload, update, toggle) |
 | **S8** | ✅ v1.7.0 | Debug & fixes — 15 bugs opgelost, composer PSR-4 |
-| **S9** | 🔜 Gepland | Forum module (discussies, topics, categorieën) |
-| **S10**| 📋 Gepland | YouTube + Kick integratie |
-| **S11**| 📋 Gepland | Premium ecosysteem + licenties + betalingen |
-| **S12**| 📋 Gepland | Multi-language / i18n volledige implementatie |
+| **S9** | ✅ v1.8.0 | **WoW Module v2 — Guild Roster + Character Armory (Blizzard API v2, profile-eu)** |
+| **S10** | 🔜 Gepland | Forum module (discussies, topics, categorieën) |
+| **S11** | 📋 Gepland | YouTube + Kick integratie |
+| **S12** | 📋 Gepland | Premium ecosysteem + licenties + betalingen |
+| **S13** | 📋 Gepland | Multi-language / i18n volledige implementatie |
 
 ---
 
@@ -146,6 +175,7 @@ cp .env.example .env
 - AES-256-GCM OAuth token encryptie
 - Rate limiting (60 req/min per IP)
 - JWT authenticatie (HS256 + exp validatie)
+- Blizzard token via `Authorization: Bearer` header (geen URL token lekkage)
 
 ---
 
@@ -175,7 +205,7 @@ GPL-3.0-or-later — © 2026 [DieOuwe](https://www.dieouwe.nl) / [Slayer Allianc
 
 <!--
 ╔══════════════════════════════════════════════════════════════════════╗
-║  File: README.md | Role: Docs | Version: 1.7.0                       ║
-║  Updated: 2026-06-06 — Sprint 8 debug + fixes                        ║
+║  File: README.md | Role: Docs | Version: 1.8.0                       ║
+║  Updated: 2026-06-06 — Sprint 9: WoW Module v2 Roster + Armory       ║
 ╚══════════════════════════════════════════════════════════════════════╝
 -->
