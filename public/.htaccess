@@ -1,0 +1,12 @@
+Options -MultiViews -Indexes
+RewriteEngine On
+
+# Block toegang tot gevoelige bestanden
+RewriteRule ^(config|storage|tests|cli|composer\.json|\.env)(/|$) - [F,L]
+
+# Laat echte bestanden door
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Alles naar front controller
+RewriteRule ^ index.php [QSA,L]

@@ -1,0 +1,213 @@
+<?php
+// ============================================================================
+// Copyright (C) 2026  DieOuwe (https://www.dieouwe.nl / https://www.slayeralliance.com)
+//
+// This work is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This work is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+// ============================================================================
+
+declare(strict_types=1);
+
+namespace CommunityFusion\Core;
+
+use CommunityFusion\Core\Database\Connection;
+use CommunityFusion\Core\Hook\HookManager;
+use CommunityFusion\Core\Cache\CacheManager;
+use CommunityFusion\Core\Template\ThemeManager;
+
+/**
+ * Community Fusion CMS — Application Bootstrap
+ *
+ * Centrale klasse die alle services initialiseert en de request afhandelt.
+ */
+final class Application
+{
+    private static ?self $instance = null;
+    private Container $container;
+    private HookManager $hooks;
+    private bool $booted = false;
+
+    private function __construct()
+    {
+        $this->container = new Container();
+        $this->hooks     = new HookManager();
+    }
+
+    public static function getInstance(): self
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    /**
+     * Bootstrap de applicatie en verwerk de HTTP request.
+     */
+    public function run(): void
+    {
+        $this->boot();
+        $this->handleRequest();
+    }
+
+    /**
+     * Registreer alle core services in de DI container.
+     */
+    private function boot(): void
+    {
+        if ($this->booted) return;
+
+        // Laad config
+        $config = require CF_ROOT . '/config/config.php';
+        $this->container->singleton('config', fn() => $config);
+
+        // Database
+        $this->container->singleton(Connection::class, function() use ($config) {
+            return new Connection($config['database']);
+        });
+
+        // Hook systeem
+        $this->container->singleton(HookManager::class, fn() => $this->hooks);
+
+        // Cache
+        $this->container->singleton(CacheManager::class, function() use ($config) {
+            return new CacheManager($config['cache']);
+        });
+
+        // Template engine
+        $this->container->singleton(ThemeManager::class, function() use ($config) {
+            return new ThemeManager(CF_ROOT . '/themes', $config['app']['theme'] ?? 'default');
+        });
+
+        // Laad geregistreerde modules
+        $this->loadModules();
+
+        // PHP instellingen
+        $this->configureRuntime($config);
+
+        $this->booted = true;
+        $this->hooks->doAction('app.booted', $this);
+    }
+
+    /**
+     * Verwerk de inkomende HTTP request via de Router.
+     */
+    private function handleRequest(): void
+    {
+        $router   = new Router($this->container, $this->hooks);
+        $request  = Request::fromGlobals();
+
+        $this->hooks->doAction('request.before', $request);
+
+        try {
+            $response = $router->dispatch($request);
+        } catch (\Throwable $e) {
+            $response = $this->handleException($e);
+        }
+
+        $this->hooks->doAction('response.before', $response);
+        $response->send();
+    }
+
+    /**
+     * Laad alle ingeschakelde modules uit de database.
+     */
+    private function loadModules(): void
+    {
+        try {
+            $db      = $this->container->make(Connection::class);
+            $modules = $db->fetchAll(
+                "SELECT slug, config FROM cf_modules WHERE is_enabled = 1 ORDER BY is_core DESC"
+            );
+
+            foreach ($modules as $row) {
+                $this->loadModule($row['slug'], json_decode($row['config'] ?? '{}', true) ?? []);
+            }
+        } catch (\Throwable) {
+            // DB nog niet beschikbaar (installatiefase) — negeren
+        }
+    }
+
+    private function loadModule(string $slug, array $config): void
+    {
+        $manifestPath = CF_ROOT . "/modules/{$slug}/module.json";
+        if (!file_exists($manifestPath)) return;
+
+        $manifest = json_decode(file_get_contents($manifestPath), true);
+        $class    = $manifest['class'] ?? null;
+
+        if ($class === null || !class_exists($class)) return;
+
+        /** @var \CommunityFusion\Core\Module\ModuleInterface $module */
+        $module = new $class($this);
+        $module->boot($this);
+
+        $this->container->instance("module.{$slug}", $module);
+    }
+
+    private function configureRuntime(array $config): void
+    {
+        $tz = $config['app']['timezone'] ?? 'UTC';
+        date_default_timezone_set($tz);
+
+        if (($config['app']['debug'] ?? false) === true) {
+            error_reporting(E_ALL);
+            ini_set('display_errors', '1');
+        } else {
+            error_reporting(0);
+            ini_set('display_errors', '0');
+        }
+    }
+
+    private function handleException(\Throwable $e): Response
+    {
+        $code    = $e instanceof HttpException ? $e->getStatusCode() : 500;
+        $message = $_ENV['APP_DEBUG'] === 'true'
+            ? $e->getMessage() . "\n" . $e->getTraceAsString()
+            : 'Er is een fout opgetreden. Probeer het later opnieuw.';
+
+        return new Response($message, $code, ['Content-Type' => 'text/plain']);
+    }
+
+    public function make(string $abstract): mixed
+    {
+        return $this->container->make($abstract);
+    }
+
+    public function getHooks(): HookManager
+    {
+        return $this->hooks;
+    }
+
+    public function getContainer(): Container
+    {
+        return $this->container;
+    }
+}
+
+// Creëer en return de applicatie instantie
+return Application::getInstance();
+
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║                         FILE CARD                                    ║
+// ╠══════════════════════════════════════════════════════════════════════╣
+// ║  File         : Application.php                                      ║
+// ║  Role         : Core                                                 ║
+// ║  Version      : 1.0.0                                                ║
+// ║  Created      : 2026-06-06                                           ║
+// ║  Last Updated : 2026-06-06  03:00                                    ║
+// ║  Status       : New                                                  ║
+// ║  Notes        : Bootstrap + DI setup, module loader                  ║
+// ╠══════════════════════════════════════════════════════════════════════╣
+// ║  Created by Dieouwe                                                  ║
+// ║  🌐 www.dieouwe.nl          ⚔️  www.slayeralliance.com              ║
+// ║  📦 curseforge.com/members/dieouwe/projects                         ║
+// ║  💬 discord.gg/y8Pu5qsEbQ                                           ║
+// ╚══════════════════════════════════════════════════════════════════════╝

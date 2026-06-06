@@ -1,0 +1,42 @@
+{
+    "name": "communityfusion/cms",
+    "description": "Community Fusion CMS — PHP 8.3+ modulair gaming/community CMS",
+    "type": "project",
+    "license": "GPL-3.0-or-later",
+    "require": {
+        "php": ">=8.3",
+        "twig/twig": "^3.0",
+        "firebase/php-jwt": "^6.0",
+        "league/container": "^4.0",
+        "league/event": "^3.0",
+        "league/route": "^5.0",
+        "psr/simple-cache": "^3.0",
+        "monolog/monolog": "^3.0",
+        "vlucas/phpdotenv": "^5.0",
+        "ramsey/uuid": "^4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0",
+        "phpstan/phpstan": "^1.0",
+        "squizlabs/php_codesniffer": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "CommunityFusion\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CommunityFusion\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test":  "phpunit --testdox",
+        "stan":  "phpstan analyse src --level=8",
+        "cs":    "phpcs --standard=PSR12 src/"
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    }
+}
